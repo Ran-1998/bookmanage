@@ -38,6 +38,10 @@ public class LogServiceImpl implements LogService{
 		// TODO Auto-generated method stub
 		Integer page = findLogVo.getPage();
 		Integer rows = findLogVo.getRows();
+		if (page==null && rows==null) {
+			page=0;
+			rows=0;
+		}
 		String date1 = findLogVo.getDate1();
 		String date2 = findLogVo.getDate2();
 		String operation = findLogVo.getOperation();
