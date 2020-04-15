@@ -31,7 +31,7 @@
 	        </div> -->
 			<div>
 				<a id="login" class="easyui-linkbutton" iconCls="icon-ok"
-					style="width: 100px; height: 32px; margin-left: 50px">注册登录</a>
+					style="width: 100px; height: 32px; margin-left: 50px">登录</a>
 			</div>
 		</div>
 	</div>

@@ -19,6 +19,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,6 @@ public class ShiroRealm extends AuthorizingRealm {
 	@Override
 	public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
 		// TODO Auto-generated method stub
-
 		HashedCredentialsMatcher cMatcher = new HashedCredentialsMatcher();
 		cMatcher.setHashAlgorithmName("MD5");
 		cMatcher.setHashIterations(1);

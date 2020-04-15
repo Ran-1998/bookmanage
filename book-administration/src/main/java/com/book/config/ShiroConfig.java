@@ -8,6 +8,8 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.Cookie;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,9 +27,19 @@ public class ShiroConfig {
 	public SecurityManager securityManager(Realm realm) {
 		DefaultWebSecurityManager sManager = new DefaultWebSecurityManager();
 		sManager.setRealm(realm);
+		sManager.setSessionManager(sessionManager());
 		return sManager;
 	}
-
+	
+	@Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        Cookie cookie=sessionManager.getSessionIdCookie();
+        cookie.setName("Adminsessid");
+        return sessionManager;
+     
+    }
+	
 	@Bean
 	public ShiroFilterFactoryBean shiroFilterFactory(SecurityManager securityManager) {
 		ShiroFilterFactoryBean sfBean = new ShiroFilterFactoryBean();
