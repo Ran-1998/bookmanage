@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.book.dao.UserMsgDao">
+
+<!--用户登录 -->
+    <select id="userMsg" resultType="com.book.entity.User">
+        SELECT
+        id,phone as username,student_Id as studentId,name,class_Name as className,created as createTime,updated as updateTime
+        FROM
+        user_information
+        WHERE
+        phone=#{phone,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 查询历史借阅总记录数 -->
+    <select id="getHistoryRowCount" resultType="int">
+        select count(*)
+        from user_borrow
+        where user_Id=#{studentId}
+    </select>
+    
+    <!-- 借阅记录查询 -->
+    <select id="userHistory" resultType="com.book.entity.Borrow">
+		SELECT user_borrow.book_Id as bookId,book_information.bookName as bookName,user_borrow.`status`,user_borrow.created,user_borrow.return_Time as returnTime
+		FROM user_borrow,book_information
+		WHERE user_borrow.user_Id=#{studentId} AND user_borrow.book_Id=book_information.id
+		order by user_borrow.id desc
+        limit #{startIndex},#{pageSize}
+	</select>
+	
+	<!-- 验证用户 -->
+	<select id="verifyUser" resultType="int">
+		select count(*)
+        from user_information
+        where phone=#{user} and password=#{pwd}
+	</select>
+	
+	<!-- 更改用户密码 -->
+	<update id="updatePassword">
+		update
+		user_information
+		set password=#{newPwd}
+		where phone=#{user}
+	</update>
+	
+	<!-- 查询借阅书籍的状态 -->
+	<select id="bookStatus"	resultType="int">
+		select status
+		from book_information
+		where id=#{bookId}
+	</select>
+	
+	<!-- 更改图书状态信息 -->
+	<update id="changeBookStatus">
+		update
+		book_information
+		set status=2
+		where id=#{bookId}
+	</update>
+	
+	<insert id="insertBorrow">
+		insert into user_borrow (user_id,book_id,status,created,return_Time) values (#{id},#{bookId},1,#{format},#{vdate})
+	</insert>
+</mapper>

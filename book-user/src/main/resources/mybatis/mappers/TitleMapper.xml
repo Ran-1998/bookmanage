@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.book.dao.TitleDao">
+
+    <sql id="queryWhereId">
+        from book_category
+    </sql>
+    
+    <!-- 查询总记录数 -->
+    <select id="getRowCount" resultType="int">
+        select count(*)
+        <include refid="queryWhereId"/>
+        <where>
+            <if test="category!=null and category!=''">
+               name like concat("%",#{category},"%")
+            </if>
+     </where>
+    </select>
+    
+    <!-- 查询总记录数 -->
+    <select id="getParentIdRowCount" resultType="int">
+        select count(*)
+        from book_information
+        <where>
+            <if test="bookname!=null and bookname!=''">
+               bookName like concat("%",#{bookname},"%")
+            </if>
+            <if test="parentId!=null and parentId!=''">
+               cid like concat("%",#{parentId},"%")
+            </if>
+     	</where>
+    </select>
+
+    <!-- 查询当前页记录，resultType的值为一行记录要映射的结果类型 
+    <where>
+            <if test="category!=null and category!=''">
+               name like concat("%",#{category},"%")
+            </if>
+            
+     	</where>
+    -->
+    <select id="queryTitle" resultType="com.book.entity.Category">
+        select id,parent_id as parentId,name,is_parent as isParent,updated
+        <include refid="queryWhereId"/>
+        where parent_id=0
+        order by id desc
+    </select>
+	
+	<select id="queryTwoTitle" resultType="com.book.entity.Category">
+        select id,parent_id as parentId,name,is_parent as isParent,updated
+        <include refid="queryWhereId"/>
+        where parent_id=#{fid} and is_parent!=0
+        order by id desc
+    </select>
+    
+    <select id="queryThreeTitle" resultType="com.book.entity.Category">
+        select id,parent_id as parentId,name,is_parent as isParent,updated
+        <include refid="queryWhereId"/>
+        where parent_id=#{sid} and is_parent=0
+        order by id desc
+    </select>
+	
+	<select id="queryBook" resultType="com.book.entity.Book">
+		select id,image as imgUrl,bookName,author,press as bookPress,publicationDate as pressDate
+		from book_information
+		<where>
+            <if test="bookname!=null and bookname!=''">
+               bookName like concat("%",#{bookname},"%")
+            </if>
+            <if test="parentId!=null and parentId!=''">
+               cid like concat("%",#{parentId},"%")
+            </if>
+     	</where>
+		order by id desc
+		limit #{startIndex},#{pageSize}
+	</select>
+	
+	<select id="findParticularById" resultType="com.book.entity.Book">
+		select id,ISBN,image as imgUrl,bookName,author,press as bookPress,publicationDate as pressDate,briefIntroduction as bookParticular,status
+		from book_information
+		where id=#{id}
+	</select>
+</mapper>

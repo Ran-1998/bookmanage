@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>图书借阅</title>
+<!-- Tell the browser to be responsive to screen width -->
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<!-- Bootstrap 3.3.7 -->
+<link rel="stylesheet"
+	href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+	href="bower_components/font-awesome/css/font-awesome.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet"
+	href="bower_components/Ionicons/css/ionicons.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+<!-- iCheck -->
+<link rel="stylesheet" href="plugins/iCheck/square/blue.css">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+<!-- Google Font -->
+</head>
+<body class="hold-transition login-page" style="height: auto;">
+	<div class="login-box">
+		<div class="login-logo">
+			<a href="#"><b>注册</b></a>
+		</div>
+		<!-- /.login-logo -->
+		<div class="login-box-body">
+			<p class="login-box-msg">注册你的账户请如实填写您的信息</p>
+
+			<form method="get" action="/addUser" name="form1" id="form1">
+				<div class="form-group has-feedback" align="center">
+					<input type="text" id="username" name="username" class="username"
+						maxlength="11" minlength="11" placeholder="请输入电话号码"
+						pattern="[0-9]{11,11}" required="required">
+				</div>
+				<div class="form-group has-feedback" align="center">
+					<input type="text" id="studentId" name="studentId"
+						class="studentId" pattern="[0-9]{12,12}" required="required"
+						placeholder="请输入学号">
+				</div>
+				<div class="form-group has-feedback" align="center">
+					<input type="text" id="className" name="className"
+						class="className" required="required" placeholder="年级+专业+班级">
+				</div>
+				<div class="form-group has-feedback" align="center">
+					<input type="text" id="name" name="name" class="name"
+						required="required" placeholder="姓名">
+				</div>
+				<div class="form-group has-feedback" align="center">
+					<input type="password" id="password" name="password"
+						class="password" pattern="[A-Za-z0-9]{6,12}" required="required"
+						placeholder="请输入密码">
+				</div>
+				<div class="form-group has-feedback" align="center">
+					<input type="password" id="password2" name="password2"
+						class="password2" pattern="[A-Za-z0-9]{6,12}" required="required"
+						placeholder="确认密码">
+				</div>
+				<div class="form-group has-feedback" align="center">
+					<!--<a href="#" id="ckcode">获取验证码</a>-->
+					<input style="background: #ffb99d; width: 90px; height: 32px"
+						type="button" class="obtain generate_code"
+						onclick="getverify(this)" value="获取验证码">
+				</div>
+				<div class="form-group has-feedback" align="center">
+
+
+					<!--<a href="#" id="ckcode">获取验证码</a>-->
+					<input type="text" maxlength="6" id="code" name="code" class="code"
+						placeholder="请输入验证码">
+				</div>
+
+
+				<div class="row" align="center">
+					<div class="col-xs-8" style="float: none;">
+						<button style="align: center;" type="submit" id="regbtn"
+							class="btn btn-primary btn-block btn-flat btn-login" onclick="submitYouFrom('addUser')">注册</button>
+					</div>
+					<!-- /.col -->
+				</div>
+			</form>
+
+		</div>
+		<!-- /.login-box-body -->
+	</div>
+	<!-- /.login-box -->
+
+	<!-- jQuery 3 -->
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<!-- Bootstrap 3.3.7 -->
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<!-- iCheck -->
+	<script src="plugins/iCheck/icheck.min.js"></script>
+	<script type="text/javascript">
+		var countdown=60;
+		function getverify(val) {
+			console.log(val);
+			var re = /^1\d{10}$/;
+			console.log($("#username").val());
+			var tel = ($("#username").val());
+			var url = "/verify/GetVerify";
+			var params={username:tel}
+			if (re.test(tel)) {
+				console.log(params);
+				$.get(url,params,function(result){
+					console.log(result);
+					if(result.state==1){
+						time(60,val);
+					}else if(result.state==0){
+						var prompt = "每个号码每日最多获取5次，请明日在试！";
+						document.getElementById("prompt").innerHTML= prompt;
+						result.message;
+					}
+				});
+			}
+		}
+
+		function time(countdown,val){
+			if (countdown == 0) {
+				val.removeAttribute("disabled");
+				val.value="获取验证码";
+				countdown = 60;
+				return false;
+			} else {
+				val.setAttribute("disabled", true);
+				val.value="重新发送(" + countdown + ")";
+				countdown--;
+			}
+			setTimeout(function() {
+                time(countdown,val);
+			},1000);
+		}
+
+		// 判断两次输入的密码是否一致
+		
+		function passwords2() {
+			('#password2').keyup(passwords2);
+	        var password = $("#password").val();
+	        var password2 = $("#password2").val();
+	        
+			if(!password2 || password2.length < password.length){
+				return;
+			}
+	        if (password != password2){
+	            alert("两次输入的密码不匹配");
+	            document.getElementById("password2").focus();
+	            return;
+	        }
+	    }
+
+	</script>
+</body>
+
+</html>

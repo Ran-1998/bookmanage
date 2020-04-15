@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>图书借阅</title>
+<!-- Tell the browser to be responsive to screen width -->
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<link rel="stylesheet"
+	href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+	href="bower_components/font-awesome/css/font-awesome.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet"
+	href="bower_components/Ionicons/css/ionicons.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+<!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect. -->
+<link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
+<link rel="stylesheet"
+	href="bower_components/layer/skin/default/layer.css">
+<link rel="stylesheet"
+	href="bower_components/ztree/css/metroStyle/metroStyle.css" />
+<link rel="stylesheet"
+	href="bower_components/treegrid/jquery.treegrid.css" />
+<style type="text/css">
+.gl-item {
+	width: 240px;
+	height: 466px;
+	margin-right: 25px;
+	margin-top: 10px;
+	float: left;
+	list-style-type: none;
+}
+
+.pull-right1 {
+	float: left;
+}
+
+.default {
+	margin: auto;
+	text-align: center;
+	font-size: 50px;
+	color: #686868;
+	text-shadow: 5px 5px 5px #444;
+	margin-top: 180px;
+}
+</style>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+<!-- Google Font -->
+
+</head>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to get the
+desired effect
+|---------------------------------------------------------|
+| SKINS         | skin-blue                               |
+|               | skin-black                              |
+|               | skin-purple                             |
+|               | skin-yellow                             |
+|               | skin-red                                |
+|               | skin-green                              |
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | fixed                                   |
+|               | layout-boxed                            |
+|               | layout-top-nav                          |
+|               | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+<body class="hold-transition skin-blue sidebar-mini">
+	<div class="wrapper">
+
+		<!-- Main Header -->
+		<header class="main-header">
+
+			<!-- Logo -->
+			<a href="#" class="logo"> <!-- mini logo for sidebar mini 50x50 pixels -->
+				<span class="logo-mini">图书借阅</span> <!-- logo for regular state and mobile devices -->
+				<span class="logo-lg">图书借阅</span>
+			</a>
+
+			<!-- Header Navbar -->
+			<nav class="navbar navbar-static-top" role="navigation">
+				<!-- Sidebar toggle button-->
+				<a href="#" class="sidebar-toggle" data-toggle="push-menu"
+					role="button"> <span class="sr-only">Toggle navigation</span>
+				</a>
+				<!-- Navbar Right Menu -->
+				<div class="navbar-custom-menu">
+					<ul class="nav navbar-nav">
+						<!-- /.messages-menu -->
+						<!-- User Account Menu -->
+						<li class="dropdown user user-menu">
+							<!-- Menu Toggle Button --> <a id="user" href="#"
+							class="dropdown-toggle" data-toggle="dropdown"
+							style="font-size: 25px;"><img
+								src="dist/img/user2-160x160.jpg" class="user-image"
+								alt="User Image">用户</a>
+							<ul class="dropdown-menu">
+								<!-- The user image in the menu -->
+								<li class="user-header"><img
+									src="dist/img/user2-160x160.jpg" class="img-circle"
+									alt="User Image">
+
+									<p>
+										<a id="user1" class="active" style="font-size: 25px;">用户</a>
+									</p></li>
+								<!-- Menu Body -->
+								<!-- Menu Footer-->
+								<li class="user-footer">
+									<div class="pull-left">
+										<a class="btn btn-default btn-flat_history"
+											onclick="history()">历史借阅</a>
+									</div>
+									<div class="pull-left">
+										<a class="btn btn-default btn-flat_updatePass"
+											onclick="updatePass()">修改密码</a>
+									</div>
+									<div class="pull-right">
+										<a href="/doLogout" class="btn btn-default btn-sign-out">退出</a>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<!-- Left side column. contains the logo and sidebar -->
+		<aside class="main-sidebar">
+
+			<!-- sidebar: style can be found in sidebar.less -->
+			<section class="sidebar">
+
+				<!-- Sidebar user panel (optional) -->
+				<div class="user-panel">
+					<div class="pull-left image">
+						<img src="dist/img/user2-160x160.jpg" class="img-circle"
+							alt="User Image">
+					</div>
+					<div class="pull-left info">
+						<p>
+							<a id="user2" style="font-size: 22px;"></a>
+						</p>
+						<!-- Status -->
+					</div>
+				</div>
+
+
+				<!-- Sidebar Menu -->
+				<ul class="sidebar-menu">
+					<li clss="header"
+						style="color: #b8c7ce; size: 5px; margin-left: 10px">类别</li>
+					<li id="tbodyId_F">
+						<ul id="tbodyId_left" class="sidebar-menu" data-widget="tree">
+
+						</ul>
+					</li>
+
+					<!-- Optionally, you can add icons to the links 
+        <li class="treeview">
+	        <a href="#"><i class="fa fa-link"></i> 
+		        <span>商品管理</span>
+		        <span class="pull-right-container">
+		        	<i class="fa fa-angle-left pull-right"></i>
+		        </span>
+	        </a>       
+	        <ul class="treeview-menu">
+	            <li><a id="load-base-id">基本管理</a></li>
+	            <li><a id="load-type-id">类目管理</a></li>
+	            <li><a id="load-brand-id">品牌管理</a></li>
+	            <li><a id="load-attr-id">属性管理</a></li>
+	        </ul>
+        </li> 
+        <li class="treeview">
+          <a href="#"><i class="fa fa-link"></i> 
+          <span>系统管理</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a id="load-dept-id">部门管理</a></li>
+            <li><a id="load-menu-id">菜单管理</a></li>
+            <li><a id="load-role-id">角色管理</a></li>
+            <li><a id="load-user-id">用户管理</a></li>
+            <li><a id="load-log-id"> 日志管理</a></li>
+            <li><a id="load-pwd-id"> 修改密码</a></li>
+          </ul>
+        </li>
+      </ul>
+      -->
+					<!-- /.sidebar-menu -->
+			</section>
+
+			<!-- /.sidebar -->
+		</aside>
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1>
+					Page Header <small>Optional description</small>
+				</h1>
+				<ol class="breadcrumb">
+					<li><a href="#" id="null" onclick="doBook()"><i class="fa fa-dashboard"></i> Level</a></li>
+					<li class="active">Here</li>
+				</ol>
+			</section>
+			<!-- Main content -->
+			<section id="mainContentId" class="content container-fluid" name="rightFrame">
+				<!-- 
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="box">
+							<div class="box-header">
+								<h3 class="box-title">书籍基本信息</h3>
+
+								<div class="box-tools">
+									<div class="input-group input-group-sm" style="width: 350px;">
+										<input type="text" name="table_search" id="searchNameId"
+											class="form-control pull-right1" placeholder="书籍查询">
+
+										<div class="input-group-btn">
+											<button type="button" class="btn btn-default btn-search">
+												<i class="fa fa-search"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						
+							<div class="box-body table-responsive no-padding"
+								style="width: 70%; height: 480px;">
+								<ul id="tbodyId">
+									<li class="default" style="list-style-type: none;">欢迎借阅图书...</li>
+								</ul>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				 -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<!-- Main Footer -->
+		<footer class="main-footer">
+			<!-- To the right -->
+			<div class="pull-right hidden-xs">Anything you want</div>
+			<!-- Default to the left -->
+			<strong>Copyright &copy; 2020 <a href="#">Company</a>.
+			</strong> All rights reserved.
+		</footer>
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Create the tabs -->
+			<ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+				<li class="active"><a href="#control-sidebar-home-tab"
+					data-toggle="tab"><i class="fa fa-home"></i></a></li>
+				<li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i
+						class="fa fa-gears"></i></a></li>
+			</ul>
+			<!-- Tab panes -->
+			<div class="tab-content">
+				<!-- Home tab content -->
+				<div class="tab-pane active" id="control-sidebar-home-tab">
+					<h3 class="control-sidebar-heading">Recent Activity</h3>
+					<ul class="control-sidebar-menu">
+						<li><a href="javascript:;"> <i
+								class="menu-icon fa fa-birthday-cake bg-red"></i>
+								<div class="menu-info">
+									<h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+									<p>Will be 23 on April 24th</p>
+								</div>
+						</a></li>
+					</ul>
+					<!-- /.control-sidebar-menu -->
+
+					<h3 class="control-sidebar-heading">Tasks Progress</h3>
+					<ul class="control-sidebar-menu">
+						<li><a href="javascript:;">
+								<h4 class="control-sidebar-subheading">
+									Custom Template Design <span class="pull-right-container">
+										<span class="label label-danger pull-right">70%</span>
+									</span>
+								</h4>
+
+								<div class="progress progress-xxs">
+									<div class="progress-bar progress-bar-danger"
+										style="width: 70%"></div>
+								</div>
+						</a></li>
+					</ul>
+					<!-- /.control-sidebar-menu -->
+
+				</div>
+				<!-- /.tab-pane -->
+				<!-- Stats tab content -->
+				<div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab
+					Content</div>
+				<!-- /.tab-pane -->
+				<!-- Settings tab content -->
+				<div class="tab-pane" id="control-sidebar-settings-tab">
+					<form method="post">
+						<h3 class="control-sidebar-heading">General Settings</h3>
+
+						<div class="form-group">
+							<label class="control-sidebar-subheading"> Report panel
+								usage <input type="checkbox" class="pull-right" checked>
+							</label>
+
+							<p>Some information about this general settings option</p>
+						</div>
+						<!-- /.form-group -->
+					</form>
+				</div>
+				<!-- /.tab-pane -->
+			</div>
+		</aside>
+		<!-- /.control-sidebar -->
+		<!-- Add the sidebar's background. This div must be placed
+  immediately after the control sidebar -->
+		<div class="control-sidebar-bg"></div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary btn-save">Save
+						changes</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+	<!-- ./wrapper -->
+	<!-- REQUIRED JS SCRIPTS -->
+	<!-- jQuery 3 -->
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<!-- Bootstrap 3.3.7 -->
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="dist/js/adminlte.min.js"></script>
+	<script type="text/javascript">
+		var studentId;
+		//var parentId=null;
+		$(function() {
+			doBook();
+			//初始化页面用户信息
+			doGetObjectsLeft();
+			doInitUserInfo();
+			$(".btn-search_left").on("click", doQueryObjectsLeft);
+			userMsg();
+		});
+		function doBook(){
+			$("#mainContentId").load("html/sys/book_list.html");
+		}
+		function userMsg() {
+			$.ajax({
+				url : '/userMsg/userName',
+				type : "get",
+				success : function(res) {
+					//console.log(res);
+					var name = res.data.name;
+					document.getElementById("user").innerHTML = name;
+					document.getElementById("user1").innerHTML = name;
+					document.getElementById("user2").innerHTML = name;
+					studentId = res.data.id;
+					//document.getElementById("history").href="/userMsg/history?studentId="+studentId;
+					//document.getElementById("msg").href="/userMsg/history;
+				}
+			});
+		}
+		function doQueryObjectsLeft() {
+			$("#pageId_left").data("pageCurrent", 1);
+			doGetObjectsLeft();
+		}
+		function doGetObjectsLeft() {
+			//1.定义请求的参数
+			//1.1获取页码值
+			//var params="pageCurrent=1";
+			var pageCurrent = $("#pageId_left").data("pageCurrent");
+			if (!pageCurrent)
+				pageCurrent = 1;
+			var params = {
+				"pageCurrent" : pageCurrent
+			}
+			//1.2获取用户输入的用户名(搜索条件)
+			var category = $("#searchNameIdLeft").val();
+			// var uname = "";
+			if (category)
+				params.category = category;
+			var url = "/log/doFindPageObjects";
+			$.getJSON(url, function(result) {
+				//console.log(result);
+				doHandleResponseResultLeft(result);
+			});
+		}
+		//处理服务端的响应结果
+		function doHandleResponseResultLeft(result) {
+			//console.log(result);
+			if (result.state == 1) {
+				//1.将日志记录呈现列表页面
+				doSetTableBodyRowsLeft(result.data);//日志信息
+				//2.将分页信息呈现的分页页面
+				//doSetPaginationLeft(result.data);//PageObject
+			} else {
+				alert(result.message);
+			}
+		}
+
+		//将日志信息呈现在table对象的tbody中
+		function doSetTableBodyRowsLeft(records) {
+			//1.获取tbody对象,并清空原有内容
+			var tBody = $("#tbodyId_left");
+			tBody.empty();//清空内容
+			//2.迭代records记录，将记录追加tbody中
+			for (var i = 0; i < records.length; i++) {
+				var id = records[i].id;
+				//console.log("id="+id);
+				//2.1创建tr对象
+				var ul = $("<li class='treeview'></li>");
+				//2.2创建tr中的td对象
+				var tds = doCreateTdsLeft(records[i], id);
+				//2.3将td对象追加到tr中
+				ul.append(tds);
+				//2.4将tr追加到tbody中
+				tBody.append(ul);
+				doSetTableBodyRowsLeftTwo(records[i].twoCategory, id)
+			}
+		}
+		//创建每行的td对象 onclick='doGetParentId("+data.parentId+")'
+		function doCreateTdsLeft(data, id) {
+			//console.log(data);
+			//console.log(data.twoCategory);
+			var tds = "<a href='#'><span>"
+					+ data.name
+					+ "</span></a>"
+					+ "<ul id='father"+id+"' class='treeview-menu' style='display: none;'></ul>"
+			return tds;
+		}//<li><a><span>"+data.twoCategory.name+"</span></a></li>
+		function doSetTableBodyRowsLeftTwo(records, id) {
+			//console.log("2  1"+records);
+			//1.获取tbody对象,并清空原有内容
+			//var tBody=$("#"+id+"");
+			var aa = "father" + id;
+			//console.log(aa);
+			var tBody = $("#" + aa);
+			//tBody.empty();//清空内容
+			//2.迭代records记录，将记录追加tbody中
+			//console.log(records.length);
+			for (var i = 0; i < records.length; i++) {
+				var sid = records[i].id;
+				//2.1创建tr对象
+				var ul = $("<li class='treeview'></li>");
+				//2.2创建tr中的td对象
+				var tds = doCreateTdsLeftTwo(records[i], sid);
+				//2.3将td对象追加到tr中
+				ul.append(tds);
+				//2.4将tr追加到tbody中
+				tBody.append(ul);
+				//console.log("3  1"+records[i].ThreeCategory);
+				doSetTableBodyRowsLeftThree(records[i].threeCategory, sid);
+			}
+		}
+		function doCreateTdsLeftTwo(data, sid) {
+			//console.log(data);
+			var tds = "<a href='#'><span>"
+					+ data.name
+					+ "</span></a>"
+					+ "<ul id='son"+sid+"'class='treeview-menu' style='display: none;'></ul>";
+			return tds;
+		}
+		function doSetTableBodyRowsLeftThree(records, sid) {
+			//console.log(records);
+			//1.获取tbody对象,并清空原有内容
+			//var tBody=$("#"+id+"");
+			var aa = "son" + sid;
+			//console.log(aa);
+			var tBody = $("#" + aa);
+			//tBody.empty();//清空内容
+			//2.迭代records记录，将记录追加tbody中
+			//console.log(records.length);
+			for (var i = 0; i < records.length; i++) {
+				var gid = records[i].id;
+				//2.1创建tr对象
+				var ul = $("<li class='gendson'></li>");
+				//2.2创建tr中的td对象
+				var tds = doCreateTdsLeftThree(records[i], gid);
+				//2.3将td对象追加到tr中
+				ul.append(tds);
+				//2.4将tr追加到tbody中
+				tBody.append(ul);
+			}
+		}
+		function doCreateTdsLeftThree(data, gid) {
+			//console.log("3  3"+data.name);
+			var tds = "<a onclick='doLoadPageLeft(" + data.id
+					+ ",this.text)'><span>" + data.name + "</span></a>";
+			return tds;
+		}
+		function doInitUserInfo() {
+			var url = "user/doGetLoginUser";
+			$.getJSON(url, function(result) {
+				if (result.state == 1) {
+					var p = $(".info").find("p:eq(0)");
+					p.empty();
+					p.text(result.data.username);
+					$(".hidden-xs").text(result.data.username);
+				}
+			})
+		}
+		function doFindObjectById(parentId) {
+			//1.params
+			var params = {
+				"parentId" : parentId,
+				"pageCurrent" : 1
+			};
+			//console.log(params);
+			//2.url
+			//var url="html/sys/book_list.html?parentId="+parentId;
+			var url = "log/doFindParentId";
+			//document.cookie=parentId;
+			//3.ajax request
+			$.getJSON(url, params, function(result) {//JsonResult
+				if (result.state == 1) {
+					//console.log(result);
+					$("#mainContentId").data("rowData", result.data);
+					doLoadPage();
+				} else {
+					alert(result.message);
+				}
+			});
+		}
+		function doLoadPageLeft(parentId, name) {
+			//console.log(parentId);
+			//document.cookie = parentId;
+			var url = "html/sys/book_list.html"
+			$("#mainContentId").load(url, function() {
+				$(".box-title").html(name);
+				parentId;
+				//doGetObjects(parentId);
+				doParentId(parentId);
+			});
+		}
+		function history() {
+			//console.log(555);
+			var url = "html/sys/borrow_list.html"
+			$("#mainContentId").load(url, function() {
+			});
+		}
+		function updatePass() {
+			//console.log(555);
+			var url = "html/sys/pwd_edit.html"
+			$("#mainContentId").load(url, function() {
+			});
+		}
+	</script>
+</body>
+</html>
+
+
+
+
+

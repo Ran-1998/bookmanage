@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.book.dao.VerifyDao">
+
+    <!-- 验证码添加 -->
+    <insert id="addVerifyCode" >
+        insert into u_verify (verify) values (#{addVerify})
+    </insert>
+
+    <!-- 验证码查询 -->
+    <select id="queryVerifyCode" resultType="int">
+        select count(*) from u_verify where verify=#{queryVerify,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 验证码删除 -->
+    <delete id="deleteVerifyCode">
+        delete from u_verify where verify=#{deleteVerify}
+    </delete>
+
+    <!-- 添加电话号码 -->
+    <insert id="addTel">
+        insert into u_tel (tel) values (#{addtel})
+    </insert>
+
+    <!-- 查询电话号码 -->
+    <select id="queryTel" resultType="int">
+        select count(*) from u_tel where tel=#{querytel}
+    </select>
+
+</mapper>

@@ -1,0 +1,99 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	.borrow{
+		float: right;
+	}
+	.message{
+		height: 500px;
+	}
+	.basic{
+		padding-top: 30px;
+		padding-right: 200px;
+	}
+	.img2{
+		float: left;
+		padding-bottom: 15px;
+	}
+	.particular{
+		height: 400px;
+		width: 800px;
+	}
+</style>
+</head>
+<body>
+	<div>
+		<div class="message">
+			<div class="img">
+				<img class="img2" id="img2" width="400" height="450" th:src="${result.data.getimgUrl()}">
+			</div>
+			<div class="basic" id="msg">
+				<h5 id="bookName"></h5>
+				<p><a>作者：</a><a id="author"></a></p>
+				<p><a>出版社：</a><a id="press"></a></p>
+				<p><a>ISBN：</a><a id="ISBN"></a></p>
+				<p><a>出版时间：</a><a id="pressDate"></a></p>
+				<p><a id="bookStatus" style="color: red;font-size: 30px">暂时不可借阅</a></p>
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-default btn-search">借阅</button>
+				</div>
+			</div>
+		</div>
+		<div class="particular">
+			<p><a id="bookParticular"></a></p>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script th:inline="javascript">
+		var status;
+		var bookIdMsg;
+		$(function(){
+			//doGetObjects();
+			$(".input-group-btn").on("click",".btn-search",borrow);
+		});
+		function doGetObjects(bookId){
+			//bookIdMsg = bookId;
+			console.log(bookId);
+			var params={"bookId":bookId}
+			var url="/log/doFindParticular";
+			$.getJSON(url,params,function(result){
+				console.log(result.data);
+				document.getElementById('img2').src= result.data.imgUrl;
+				document.getElementById('bookName').innerText= result.data.bookName;
+				document.getElementById('author').innerText= result.data.author;
+				document.getElementById('press').innerText= result.data.bookPress;
+				document.getElementById('ISBN').innerText= result.data.isbn;
+				document.getElementById('pressDate').innerText= result.data.pressDate;
+				document.getElementById('bookParticular').innerText= result.data.bookParticular;
+				status=result.data.status;
+				bookIdMsg=result.data.id;
+				if(result.data.status==1){
+					document.getElementById('bookStatus').innerText= "可借阅";
+				}
+			});
+		}
+		function borrow(){
+			console.log(bookIdMsg);
+			console.log(status);
+			if(status==1){
+				var url="/userMsg/doBorrow";
+				var params={"bookId":bookIdMsg}
+				//console.log(params);
+				$.get(url,params,function(result){
+					if(result.state==1){
+						alert("借阅成功");
+					}else{
+						alert("不可借阅");
+					}
+				});
+			}else{
+				alert("不可借阅");
+			}
+		}
+		
+		
+	</script>
+</body>
+</html>

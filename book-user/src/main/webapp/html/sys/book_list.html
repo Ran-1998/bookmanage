@@ -1,0 +1,174 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">书籍基本信息</h3>
+
+				<div class="box-tools">
+					<div class="input-group input-group-sm" style="width: 350px;">
+						<input type="text" name="table_search" id="searchNameId"
+							class="form-control pull-right1" placeholder="书籍查询">
+
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-default btn-search">
+                                <i class="fa fa-search"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body table-responsive no-padding" style="height: 470px;">
+				<ul id="tbodyId">
+	        		<li class="default" style="list-style-type:none;">欢迎借阅图书...</li>
+	        	</ul>  
+			</div>
+			<!-- /.box-body -->
+			<div id="pageId" class="box-footer clearfix">
+            </div>
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+<script type="text/javascript">
+	var newparentId;
+	
+	$(function(){
+		//console.log(parentId);
+		$("#pageId").load("doPageUI", doGetObjects(newparentId));
+		$("#tbodyId").on("change",".cBox",doChangeTHeadCheckBoxState);
+		$(".input-group-btn").on("click",".btn-search",doQueryObjects);
+	});
+	function doParentId(parentId){
+		newparentId=parentId;
+		doGetObjects(newparentId);
+	}
+	function doGetObjects(parentId){
+		//console.log(parentId);
+		//var pId = decodeURI(window.location.search);
+		//if(pId.indexOf("?") != -1) {
+		//	parentId = pId.substr(pId.indexOf("=")+1);
+	    //}
+		 //var parentId = document.cookie;
+		 //console.log(parentId);
+		//console.log(parentId+"ccc");
+		//1.params
+		//获取在Page.html中绑定的当前页码值
+		var pageCurrent=$("#pageId").data("pageCurrent");
+		//假如没有值,设置初始值为1
+		if(!pageCurrent)pageCurrent=1;
+		var params={"pageCurrent":pageCurrent}
+		//1.2获取用户输入的书名(搜索条件)
+        var bookname=$("#searchNameId").val();
+		console.log(bookname);
+        if(bookname)params.bookname=bookname;
+        if(parentId)params.parentId=parentId;
+        console.log(params);
+		var url="/log/doFindParentId";
+		var re=/^\d+$/;
+		if(bookname!=null || re.test(parentId)){
+			console.log(params);
+		$.getJSON(url,params,function(result){
+			console.log(result);
+			doHandleResponseResult(result);
+		});
+		}
+	}
+	function doLoadPage(result){
+		   //console.log(title);
+		   var url="html/sys/book_list.html"
+		   $("#mainContentId").load(url,function(){
+			   $(".box-title").html;
+		   }) 
+	   }
+	//处理服务端的响应结果
+    function doHandleResponseResult(result){
+        console.log(result);
+        if(result.state==1){
+            //1.将日志记录呈现列表页面
+            doSetTableBodyRows(result.data.records);//日志信息
+            //2.将分页信息呈现的分页页面
+            doSetPagination(result.data);//PageObject
+        }else{
+            alert(result.message);
+        }
+    }
+	//将日志信息呈现在table对象的tbody中
+    function doSetTableBodyRows(records){
+        //1.获取tbody对象,并清空原有内容
+        var tBody=$("#tbodyId");
+        tBody.empty();//清空内容
+        //2.迭代records记录，将记录追加tbody中
+        for(var i=0;i<records.length;i++){
+            //2.1创建tr对象
+            var tr=$("<li class='gl-item'></li>");
+            //2.2创建tr中的td对象
+            var tds=doCreateTds(records[i]);
+            //2.3将td对象追加到tr中
+            tr.append(tds);
+            //2.4将tr追加到tbody中
+            tBody.append(tr);
+        }
+    }
+  //创建每行的td对象
+    function doCreateTds(data){
+        var tds=
+        	"<div class='"+data.id+"'><div class='img'><a id='"+data.id+"' onclick='doLoadPage(this.id)'><img width='220' height='220' src='"+data.imgUrl+"'</a></div><div class='name'><a>"+data.bookName+"</a></div></div>";
+        return tds;
+    }
+    function doFindObjectById(bookId){
+    	//console.log("1231"+bookId);
+ 	   //1.params
+ 	   var params={"bookId":bookId};
+ 	   //2.url
+ 	   var url="/log/doFindParticular";
+ 	   //3.ajax request
+ 	   $.getJSON(url,params,function(result){//JsonResult
+ 		   if(result.state==1){
+ 			  $("#mainContentId").data("rowData",result.data); 
+ 			  console.log("1231"+result.data);
+ 	          //doLoadPage(title);
+ 		   }else{
+ 			  alert(result.message);
+ 		   }
+ 	   });
+    }
+    function doLoadPage(bookId){
+		   //console.log(title);
+		   //document.cookie=bookId;
+		   var url="html/sys/book_particular.html"
+		   $("#mainContentId").load(url,function(){
+			   //$(".box-title").html;
+			   doGetObjects(bookId);
+		   }) 
+	   }
+	//实现分页数据的初始化
+    function doSetPagination(pageObject){
+        //1.初始化总记录数
+        $(".rowCount").html("总记录数("+pageObject.rowCount+")");
+        //2.初始化总页数
+        $(".pageCount").html("总页数("+pageObject.pageCount+")");
+        //3.初始化当前页码值
+        $(".pageCurrent").html("当前页("+pageObject.pageCurrent+")");
+        //4.保存pageCurrent，pageCount的值
+        //data函数为jquey函数，用于在指定对象上绑定或获取值
+        //data函数语法 data(key,[value]);
+        //当结构中有value时就是存储，没有value就是基于key获取。
+        $("#pageId").data("pageCurrent",pageObject.pageCurrent);
+        $("#pageId").data("pageCount",pageObject.pageCount);
+    }
+    function doChangeTHeadCheckBoxState(){
+        //1.获取tbody中所有checkbox对象状态相与的结果
+        var flag=true;
+        $("#tbodyId input[type='checkbox']")
+            .each(function(){
+                flag=flag&$(this).prop("checked");
+            });
+        //2.更新thead中checkbox对象状态
+        $("#checkAll").prop("checked",flag);
+    }
+    function doQueryObjects(){
+	 	   $("#pageId").data("pageCurrent",1);
+	 	   doGetObjects();
+	}
+</script>
