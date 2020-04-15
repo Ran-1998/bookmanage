@@ -142,5 +142,6 @@
 		<module>book-common</module>
 		<module>book-administration</module>
 		<module>book-user</module>
+		<module>texxt</module>
 	</modules>
 </project>
