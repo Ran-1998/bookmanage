@@ -138,12 +138,11 @@ public class BorrowServiceImpl implements BorrowService {
 	@Override
 	public void delayTime(Long[] ids, Long day, String[] returnTime) {
 		// TODO Auto-generated method stub
-		System.out.println(returnTime);
+		//System.out.println(returnTime);
 		List<Date> returnTimes = new ArrayList<Date>();
 		for (String date : returnTime) {
 			returnTimes.add(DateUtil.StringtoDate(date));
 		}
-		System.out.println(returnTimes);
 		if (day == null) {
 			day = 0l;
 		}
