@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.book.annotation.RequiredLog;
+import com.book.mapper.AdminMapper;
 import com.book.mapper.PermissionMapper;
 import com.book.mapper.RoleMapper;
 import com.book.mapper.RolePermissionMapper;
+import com.book.pojo.Admin;
 import com.book.pojo.Permission;
 import com.book.pojo.Role;
 import com.book.pojo.RolePermission;
@@ -34,6 +36,8 @@ public class RoleServiceImpl implements RoleService {
 
 	@Autowired
 	PermissionMapper permissionMapper;
+	@Autowired
+	AdminMapper adminMapper;
 
 	// static List<Long> perParentId;
 	
@@ -185,12 +189,24 @@ public class RoleServiceImpl implements RoleService {
 	@RequiredLog("删除系统角色")
 	@Override
 	public void deleteRole(Long[] ids) {
-		QueryWrapper<RolePermission> wrapper = new QueryWrapper<RolePermission>();
-		wrapper.in("role_Id", ids);
-		rolePermissionMapper.delete(wrapper);
-
-		List<Long> idList = Arrays.asList(ids);
-		roleMapper.deleteBatchIds(idList);
+		for (Long id : ids) {
+			QueryWrapper<Admin> queryWrapper=new QueryWrapper<Admin>();
+			queryWrapper.select("id").eq("role_Id", id);
+			List<Admin> selectList = adminMapper.selectList(queryWrapper);
+			if (selectList.size()!=0) {
+				for (Admin admin : selectList) {
+					adminMapper.deleteById(admin.getId());
+				}
+			}
+			roleMapper.deleteById(id);
+			System.out.println(selectList);
+			}
+		/*
+		 * QueryWrapper<RolePermission> wrapper = new QueryWrapper<RolePermission>();
+		 * wrapper.in("role_Id", ids); rolePermissionMapper.delete(wrapper);
+		 * 
+		 * List<Long> idList = Arrays.asList(ids); roleMapper.deleteBatchIds(idList);
+		 */
 
 	}
 
