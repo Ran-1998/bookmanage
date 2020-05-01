@@ -166,6 +166,15 @@
 			});
 
 		});
+
+		function getverify(){
+		var data=$('#verify').val();
+		console.log(sels);
+		$.get("/book/cat/select",{name : ss} ,
+				function(data) {
+					$('#itemParamList').treegrid('loadData',data);
+				});
+			}
 	</script>
 </body>
 </html>

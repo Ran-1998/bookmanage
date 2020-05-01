@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.book.annotation.CacheFind;
 import com.book.annotation.RequiredLog;
 import com.book.mapper.BookMapper;
 import com.book.mapper.CategoryMapper;
@@ -42,6 +43,7 @@ public class BookServiceImpl implements BookService {
 	// 分页查询
 	@RequiresPermissions("sys_book_view")
 	@RequiredLog("查询图书")
+	@CacheFind(seconds=100)
 	@Override
 	public EasyUITable findBookBypage(FindBookVo findBookVo) {
 		// TODO Auto-generated method stub

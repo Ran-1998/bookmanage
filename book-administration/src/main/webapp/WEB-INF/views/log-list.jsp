@@ -28,8 +28,8 @@
 			style="width: 100px" id="username"> 
 		操作名:<input
 			class="easyui-textbox" style="width: 100px" id="operation"> <a
-			href="#" class="easyui-linkbutton" iconCls="icon-search"
-			style="width: 80px" onclick="Search()">查询</a> </select>
+			href="#" class="easyui-linkbutton" iconCls="icon-SearchLog"
+			style="width: 80px" onclick="SearchLog()">查询</a> </select>
 	</form>
 </div>
 <script>
@@ -50,8 +50,8 @@ $.get("/log/query",  function(data) {
 			return true;
 		}
 	}
-	function Search() {
-		//console.log($("#search").combobox("getValue"))
+	function SearchLog() {
+		//console.log($("#SearchLog").combobox("getValue"))
 		if (($("#date3").combobox("getValue") != "" && $("#date4").combobox(
 				"getValue") == "")
 				|| ($("#date3").combobox("getValue") == "" && $("#date4")
