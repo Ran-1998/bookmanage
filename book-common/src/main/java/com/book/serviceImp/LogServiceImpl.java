@@ -32,7 +32,7 @@ public class LogServiceImpl implements LogService{
 		logMapper.insert(log);
 	}
 	
-	@RequiredLog("查询日志")
+	//@RequiredLog("查询日志")
 	@Override
 	public EasyUITable findLog(FindLogVo findLogVo) {
 		// TODO Auto-generated method stub
