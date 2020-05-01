@@ -23,6 +23,7 @@
 						<li data-options="attributes:{'url':'/page/book-add'}">新增图书</li>
 						<li data-options="attributes:{'url':'/page/book-cat-list'}">图书类别管理</li>
 						<li data-options="attributes:{'url':'/page/book-cat-add'}">新增类别</li>
+						<li data-options="attributes:{'url':'/page/book-review'}">图书评论管理</li>
 					</ul>
 					</li>
 				</div>

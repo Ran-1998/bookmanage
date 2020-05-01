@@ -43,7 +43,7 @@ public class BookServiceImpl implements BookService {
 	// 分页查询
 	@RequiresPermissions("sys_book_view")
 	@RequiredLog("查询图书")
-	@CacheFind(seconds=100)
+	//@CacheFind(seconds=100)
 	@Override
 	public EasyUITable findBookBypage(FindBookVo findBookVo) {
 		// TODO Auto-generated method stub
