@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.book.dao.ReviewDao">
+
+    <select id="getbookIdRowCount" resultType="int">
+    	select count(*)
+    	from user_review
+    	where book_Id=#{bookId}
+    </select>
+    
+    <select id="queryReview" resultType="com.book.entity.Review">
+    	select id, book_Id as bookId, user_Name as name,  review, created, heat
+    	from user_review
+    	where book_Id=#{bookId}
+    	order by heat desc
+		limit #{startIndex},#{pageSize}
+    </select>
+    
+    <update id="addHeat">
+    	update user_review set heat=heat+1 where id = #{id}
+    </update>
+    
+    <select id="queryHeat" resultType="com.book.entity.Review">
+    	select id, heat
+    	from user_review
+    	where id=#{id}
+    </select>
+</mapper>

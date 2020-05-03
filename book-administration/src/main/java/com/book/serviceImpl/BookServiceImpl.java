@@ -18,6 +18,7 @@ import com.book.annotation.CacheFind;
 import com.book.annotation.RequiredLog;
 import com.book.mapper.BookMapper;
 import com.book.mapper.CategoryMapper;
+import com.book.mapper.ReviewMapper;
 import com.book.pojo.Book;
 import com.book.pojo.BookCategory;
 import com.book.service.BookService;
@@ -34,6 +35,8 @@ import com.book.vo.FindBookVo;
 public class BookServiceImpl implements BookService {
 	@Autowired
 	private BookMapper bookMapper;
+	@Autowired
+	private ReviewMapper reviewMapper;
 
 	@Autowired
 	private CategoryMapper categoryMapper;
@@ -123,6 +126,9 @@ public class BookServiceImpl implements BookService {
 	public void deleteBook(Long[] ids) {
 		// TODO Auto-generated method stub
 		List<Long> idList = Arrays.asList(ids);
+		/*
+		 * for (Long bookId : idList) { reviewMapper.de }
+		 */
 		bookMapper.deleteBatchIds(idList);
 	}
 

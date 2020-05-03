@@ -39,5 +39,7 @@ public interface UserMsgDao {
 							 @Param("format")String format,
 							 @Param("vdate")String vdate);
 
+	public void reviewBook(Integer userId, Integer bookId, String review, String created,String name);
+
 
 }

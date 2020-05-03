@@ -15,6 +15,7 @@
 							<th>状态</th>
 							<th>借阅时间</th>
 							<th>归还时间</th>
+							<th>评论</th>
 						</tr>
 					</thead>
 					<tbody id="tbodyId">
@@ -31,11 +32,11 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
+//var bookName;
 $(function(){
 	   $("#pageId").load("doPageUI",function(){
 		   doGetObjects();
 	   });
-	   
 });
 
 //处理查询按钮事件
@@ -88,17 +89,27 @@ function doCreateTds(row,num){
 	   } 
 	   if(row.status==0){
 		   status="归还";
-		   var color="#ffffff";
+		   var color="#000000";
 	   }
 	   if(row.status==3){
 		   status="超时";
-		   var color="#ffffff";
 	   }
+	   //bookName=row.bookName;
 	   var tds="<td>"+num+"</td>"+
 	     "<td>"+row.bookName+"</td>"+
-	     "<td bgcolor="+color+">"+status+"</td>"+
+	     "<td><a style='color:"+color+"'>"+status+"</a></td>"+
 	     "<td>"+row.created1+"</td>"+
-	     "<td>"+row.returnTime1+"</td>";
+	     "<td>"+row.returnTime1+"</td>"+
+	     "<td><a id='"+row.bookName+"' onclick='doAddReview("+row.bookId+",this.id)'>add</a></td>";
     return tds;
+}
+
+function doAddReview(bookId,bookName){
+	console.log(bookName,bookId);
+	 var url="html/sys/book_review.html"
+		   $("#mainContentId").load(url,function(){
+			   $(".box-title").html(bookName);
+			   doGetObjects(bookId);
+		   }) 
 }
 </script>

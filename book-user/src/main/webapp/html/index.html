@@ -6,5 +6,21 @@
 </head>
 <body>
   <h1>成功注册</h1>
+  <h4>3秒后自动跳转</h4>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- iCheck -->
+<script src="plugins/iCheck/icheck.min.js"></script>
+	<script type="text/javascript">
+	var tim=3;
+	setInterval("refer()",1000);
+	function refer(){
+		if(tim==0){
+			setTimeout(window.location.href='http://localhost:8091/doIndexUI');
+		}
+		tim--;
+	}
+	</script>
 </body>
 </html>

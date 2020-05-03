@@ -61,4 +61,9 @@
 	<insert id="insertBorrow">
 		insert into user_borrow (user_id,book_id,status,created,return_Time) values (#{id},#{bookId},1,#{format},#{vdate})
 	</insert>
+	
+	<insert id="reviewBook">
+		insert into user_review(user_Id,book_Id,review,created,user_Name,heat) values (#{userId},#{bookId},#{review},#{created},#{name},0)
+	</insert>
+	
 </mapper>

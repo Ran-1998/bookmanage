@@ -10,8 +10,11 @@
 							class="form-control pull-right1" placeholder="书籍查询">
 
 						<div class="input-group-btn">
-							<button type="button" class="btn btn-default btn-search">
+							<button type="button" class="btn btn-default btn-parentId">
                                 <i class="fa fa-search"></i>
+							</button>
+							<button type="button" class="btn btn-default btn-author">
+                                	作者
 							</button>
 						</div>
 					</div>
@@ -37,7 +40,8 @@
 		//console.log(parentId);
 		$("#pageId").load("doPageUI", doGetObjects(newparentId));
 		$("#tbodyId").on("change",".cBox",doChangeTHeadCheckBoxState);
-		$(".input-group-btn").on("click",".btn-search",doQueryObjects);
+		$(".input-group-btn").on("click",".btn-parentId",doQueryObjects);
+		$(".input-group-btn").on("click",".btn-author",doQueryObjectAuthors);
 	});
 	function doParentId(parentId){
 		newparentId=parentId;
@@ -73,6 +77,32 @@
 			doHandleResponseResult(result);
 		});
 		}
+	}
+	function doQueryObjectAuthors(){
+		//console.log(parentId);
+		//var pId = decodeURI(window.location.search);
+		//if(pId.indexOf("?") != -1) {
+		//	parentId = pId.substr(pId.indexOf("=")+1);
+	    //}
+		 //var parentId = document.cookie;
+		 //console.log(parentId);
+		//console.log(parentId+"ccc");
+		//1.params
+		//获取在Page.html中绑定的当前页码值
+		var pageCurrent=$("#pageId").data("pageCurrent");
+		//假如没有值,设置初始值为1
+		if(!pageCurrent)pageCurrent=1;
+		var params={"pageCurrent":pageCurrent}
+		//1.2获取用户输入的书名(搜索条件)
+        var author=$("#searchNameId").val();
+		console.log(author);
+        if(author)params.author=author;
+        //console.log(params);
+		var url="/log/doFindAuthor";
+		$.getJSON(url,params,function(result){
+			console.log(result);
+			doHandleResponseResult(result);
+		});
 	}
 	function doLoadPage(result){
 		   //console.log(title);
@@ -110,7 +140,7 @@
             tBody.append(tr);
         }
     }
-  //创建每行的td对象
+    //创建每行的td对象
     function doCreateTds(data){
         var tds=
         	"<div class='"+data.id+"'><div class='img'><a id='"+data.id+"' onclick='doLoadPage(this.id)'><img width='220' height='220' src='"+data.imgUrl+"'</a></div><div class='name'><a>"+data.bookName+"</a></div></div>";
@@ -134,12 +164,13 @@
  	   });
     }
     function doLoadPage(bookId){
-		   //console.log(title);
+		   console.log(bookId);
 		   //document.cookie=bookId;
 		   var url="html/sys/book_particular.html"
 		   $("#mainContentId").load(url,function(){
-			   //$(".box-title").html;
-			   doGetObjects(bookId);
+			   
+			   assignment(bookId);
+			   doGetObjects1(bookId);
 		   }) 
 	   }
 	//实现分页数据的初始化

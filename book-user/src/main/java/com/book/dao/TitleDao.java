@@ -20,6 +20,10 @@ public interface TitleDao {
 	int getParentIdRowCount(@Param("bookname")String bookname,
 							@Param("parentId")String parentId);
 
+	/** 查询Author总记录数 */
+    //int getRowCount(@Param("hashCode")String hashCode);
+	int getAuthorRowCount(@Param("author")String author);
+	
     /** 查询类别 *///@Param("category")String category
     List<Category> queryTitle();
     
@@ -31,7 +35,8 @@ public interface TitleDao {
     int deleteTitle(@Param("ids")Integer...ids);
     
     /** 查询类别里的书籍 */
-    List<Book> queryBook(@Param("bookname")String bookname,
+    List<Book> queryBook(@Param("author")String author,
+    					 @Param("bookname")String bookname,
     					 @Param("parentId")String parentId,
     					 @Param("startIndex")Integer startIndex,
             			 @Param("pageSize")Integer pageSize);

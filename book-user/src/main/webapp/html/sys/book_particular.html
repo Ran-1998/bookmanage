@@ -18,8 +18,14 @@
 		padding-bottom: 15px;
 	}
 	.particular{
-		height: 400px;
 		width: 800px;
+	}
+	span{
+		margin-right: 20px;
+	}
+	.gl-item1{
+		padding-bottom: 5px;
+		border-bottom: 1px solid #ccc;
 	}
 </style>
 </head>
@@ -44,16 +50,24 @@
 		<div class="particular">
 			<p><a id="bookParticular"></a></p>
 		</div>
+		<div>
+			<div>
+				<p style="font-size: 20px;">评论</p>
+				<div id="tbodyId"></div>
+			</div>
+			<div id="pageId" class="box-footer clearfix"></div>
+		</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script th:inline="javascript">
 		var status;
 		var bookIdMsg;
 		$(function(){
-			//doGetObjects();
+			//$("#pageId").load("doPageUI", doReivewObjects());
 			$(".input-group-btn").on("click",".btn-search",borrow);
 		});
-		function doGetObjects(bookId){
+		
+		function doGetObjects1(bookId){
 			//bookIdMsg = bookId;
 			console.log(bookId);
 			var params={"bookId":bookId}
@@ -73,6 +87,8 @@
 					document.getElementById('bookStatus').innerText= "可借阅";
 				}
 			});
+			console.log(10);
+			$("#pageId").load("doPageUI2", doGetObjects(bookId));
 		}
 		function borrow(){
 			console.log(bookIdMsg);
@@ -92,8 +108,88 @@
 				alert("不可借阅");
 			}
 		}
-		
-		
+		function assignment(bookId){
+			bookMsg=bookId;
+		} 
+		function doGetObjects(bookId){
+			
+			 console.log(bookIdMsg+" aaaa");
+			//$("#pageId").load("doPageUI");
+			//1.params
+			//获取在Page.html中绑定的当前页码值
+			var pageCurrent=$("#pageId").data("pageCurrent");
+			//假如没有值,设置初始值为1
+			if(!pageCurrent)pageCurrent=1;
+			if(bookId==null)bookId=bookIdMsg;
+			var params={
+					"pageCurrent":pageCurrent,
+					"bookId":bookId
+			}
+			var url="/review/query";
+			$.getJSON(url,params,function(result){
+				doHandleResponseResult(result);
+			})
+		}
+		//处理服务端的响应结果
+	    function doHandleResponseResult(result){
+	        console.log(result);
+	        if(result.state==1){
+	            //1.将日志记录呈现列表页面
+	            doSetTableBodyRows(result.data.records);//日志信息
+	            //2.将分页信息呈现的分页页面
+	            doSetPagination(result.data);//PageObject
+	        }else{
+	            alert(result.message);
+	        }
+	    }
+	    //实现分页数据的初始化
+	    function doSetPagination(pageObject){
+	        //1.初始化总记录数
+	        $(".rowCount").html("总记录数("+pageObject.rowCount+")");
+	        //2.初始化总页数
+	        $(".pageCount").html("总页数("+pageObject.pageCount+")");
+	        //3.初始化当前页码值
+	        $(".pageCurrent").html("当前页("+pageObject.pageCurrent+")");
+	        //4.保存pageCurrent，pageCount的值
+	        //data函数为jquey函数，用于在指定对象上绑定或获取值
+	        //data函数语法 data(key,[value]);
+	        //当结构中有value时就是存储，没有value就是基于key获取。
+	        $("#pageId").data("pageCurrent",pageObject.pageCurrent);
+	        $("#pageId").data("pageCount",pageObject.pageCount);
+	    }
+	    //将日志信息呈现在table对象的tbody中
+	    function doSetTableBodyRows(records){
+	        //1.获取tbody对象,并清空原有内容
+	        var tBody=$("#tbodyId");
+	        tBody.empty();//清空内容
+	        //2.迭代records记录，将记录追加tbody中
+	        for(var i=0;i<records.length;i++){
+	            //2.1创建tr对象
+	            var tr=$("<div class='gl-item1'></div>");
+	            //2.2创建tr中的td对象
+	            var tds=doCreateTds(records[i]);
+	            //2.3将td对象追加到tr中
+	            tr.append(tds);
+	            //2.4将tr追加到tbody中
+	            tBody.append(tr);
+	        }
+	    }
+	   
+	    //创建每行的td对象
+	    function doCreateTds(data){
+	        var tds=
+	        	"<div class='"+data.id+"'><p>"+data.review+"</p><h6><span>"+data.name+"</span><span>    </span><span>"+data.created+"</span><span></span><span></span><a id='"+data.id+"' href='#' onclick='doheat("+data.id+")'>"+data.heat+"</a></h6></div>";
+	        return tds;
+	    }
+	    function doheat(id){
+	    	console.log(id);
+	    	var params={"id":id}
+			var url="/review/doHeat";
+			$.getJSON(url,params,function(result){
+				var nid=result.data.id;
+				document.getElementById(nid).innerText= result.data.heat;
+			})
+	    }
 	</script>
 </body>
 </html>

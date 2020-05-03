@@ -10,5 +10,7 @@ public interface UserMessageService {
 	int updatePassword(String user,String pwd, String newPwd, String cfgPwd);
 
 	int borrowBook(Integer bookId);
+
+	int reviewBook(Integer bookId, String review);
 	
 }

@@ -20,6 +20,7 @@ public class TitleServiceImpl implements TitleService {
 	@Autowired
     private TitleDao titleDao;
 
+	//三级目录展示
     @Override//String category
     public List<Category> queryTitle() {
         List<Category> records = titleDao.queryTitle();
@@ -46,7 +47,28 @@ public class TitleServiceImpl implements TitleService {
         //3.查询当前页记录
         int pageSize = 4;
         int startIndex = (pageCurrent-1)*pageSize;
-		List<Book> records = titleDao.queryBook(bookname,parentId,startIndex,pageSize);
+        String author = null;
+		List<Book> records = titleDao.queryBook(author,bookname,parentId,startIndex,pageSize);
+		//System.out.println(records);
+		return new PageObject<>(pageCurrent,pageSize,rowCount,records);
+	}
+
+
+	@Override
+	public PageObject<Book> queryAuthorBook(String author, Integer pageCurrent) {
+		//1.对参数进行校验
+        if (pageCurrent==null || pageCurrent<1)throw new IllegalArgumentException("当前页码值无效");
+        //2.查询总记录数并进行校验
+        //System.out.println(hashCode);
+        int rowCount = titleDao.getAuthorRowCount(author);
+        //System.out.println(rowCount+" aaaa");
+        //if (rowCount==0)throw new ServiceException("没有找到对应记录");
+        //3.查询当前页记录
+        int pageSize = 4;
+        int startIndex = (pageCurrent-1)*pageSize;
+        String bookname = null;
+        String parentId = null;
+		List<Book> records = titleDao.queryBook(author,bookname,parentId,startIndex,pageSize);
 		//System.out.println(records);
 		return new PageObject<>(pageCurrent,pageSize,rowCount,records);
 	}

@@ -1,0 +1,45 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">书籍评论</h3>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body table-responsive no-padding" style="height: 470px;">
+				 <textarea style="height: 80%;width: 60%" id="review"></textarea>
+			</div>
+			<button onclick="doReview()">提交</button>
+			
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var bookId1;
+
+	function doGetObjects(bookId){
+		bookId1=bookId;
+		//console.log(bookName,bookId);
+		
+	}
+	
+	function doReview(){
+		console.log($("#review").val())
+		if($("#review").val()==null){
+			alert("请输入内容");
+		}else {
+			var url="/userMsg/review";
+			var params={
+					bookId:bookId1,
+					review:$("#review").val()
+			};
+			$.get(url,params,function(result){
+				if(result.state==1){
+					alert("提交成功");
+				}else {
+					alert("请重新提交成功");
+				}
+			});
+		}
+	}
+	
+</script>

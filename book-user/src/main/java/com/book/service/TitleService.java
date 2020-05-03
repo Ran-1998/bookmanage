@@ -12,4 +12,6 @@ public interface TitleService {
     List<Category> queryTitle();
 
     PageObject<Book> queryParentIdBook(String bookname,String parentId,Integer pageCurrent);
+
+    PageObject<Book> queryAuthorBook(String author, Integer pageCurrent);
 }

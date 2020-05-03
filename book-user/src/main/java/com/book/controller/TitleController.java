@@ -46,7 +46,17 @@ public class TitleController {
     	//根据parentId查询
     	js.setData(titleService.queryParentIdBook(bookname,parentId,pageCurrent));
     	return js;
-    } 
+    }
+    
+    /** 根据作者查询书籍基本信息 */
+    @RequestMapping("/doFindAuthor")
+    public @ResponseBody JsonResult doFindAuthor(String author,@RequestParam Integer pageCurrent) {
+    	//System.out.println(author);
+    	JsonResult js = new JsonResult();
+    	//根据parentId查询
+    	js.setData(titleService.queryAuthorBook(author,pageCurrent));
+    	return js;
+    }
     
     /** 根基书id查找书籍详细信息 */
     @RequestMapping("/doFindParticular")

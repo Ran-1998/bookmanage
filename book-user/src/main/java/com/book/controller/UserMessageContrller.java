@@ -60,4 +60,12 @@ public class UserMessageContrller {
 		return js;
 	}
 	
+	@RequestMapping("/review")
+	public @ResponseBody JsonResult doReview(@RequestParam Integer bookId,@RequestParam String review) {
+		//System.out.println(bookId+review);
+		JsonResult js = new JsonResult();
+		js.setState(userMessageService.reviewBook(bookId,review));
+		return js;
+	}
+	
 }

@@ -38,7 +38,7 @@ public class UserMessageServiceImple implements UserMessageService{
         //System.out.println(rowCount+" aaaa");
         if (rowCount==0)throw new ServiceException("没有找到对应记录");
         //3.查询当前页记录
-        int pageSize = 15;
+        int pageSize = 8;
         int startIndex = (pageCurrent-1)*pageSize;//studentId,
         List<Borrow> records = userMsgDao.userHistory(user.getId(),startIndex,pageSize);
         //System.out.println(records);
@@ -101,6 +101,23 @@ public class UserMessageServiceImple implements UserMessageService{
 			SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 			String vdate = dateFormat.format(new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000L));
 			userMsgDao.insertBorrow(user.getId(),bookId,dateFormat.format(date),vdate);
+			rows=1;
+		}
+		return rows;
+	}
+
+	@Override
+	public int reviewBook(Integer bookId, String review) {
+		User user=(User)SecurityUtils.getSubject().getPrincipal();
+		//System.out.println(user.getId());
+		int rows=0;
+		if(review==null) {
+			rows=0;
+		}else if (review!=null) {
+			Date date = new Date();
+			SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+			String created = dateFormat.format(date); 
+			userMsgDao.reviewBook(user.getId(),bookId,review,created,user.getName());
 			rows=1;
 		}
 		return rows;
