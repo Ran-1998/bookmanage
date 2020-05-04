@@ -25,7 +25,6 @@ public class FileServiceImpl implements FileService {
 	private String localDir; //= "D:/img/";
 	@Value("${image.localDirUrl}")
 	private String localDirUrl;// = "http://image.jt.com/";
-	@RequiredLog("上传文件")
 	@Override
 	public EasyUIFile fileUpload(MultipartFile uploadFile) {
 
