@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.annotation.RequiredLog;
+import com.book.mapper.BorrowMapper;
+import com.book.mapper.ReviewMapper;
 import com.book.mapper.UserMapper;
 import com.book.pojo.User;
 import com.book.service.UserService;
@@ -26,7 +28,11 @@ import com.book.vo.FindUserVo;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
-
+	@Autowired
+	private ReviewMapper reviewMapper;
+	@Autowired
+	private BorrowMapper borrowMapper;
+	
 	@RequiresPermissions("sys_user_view")
 	@RequiredLog("查询用户")
 	@Override
@@ -71,6 +77,8 @@ public class UserServiceImpl implements UserService {
 	public void deleteUser(Long[] ids) {
 		// TODO Auto-generated method stub
 		List<Long> idList = Arrays.asList(ids);
+		reviewMapper.deleteUserByIds(idList);
+		borrowMapper.deleteUserByIds(idList);
 		userMapper.deleteBatchIds(idList);
 	}
 

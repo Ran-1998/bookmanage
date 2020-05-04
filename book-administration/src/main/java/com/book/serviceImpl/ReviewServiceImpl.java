@@ -41,6 +41,10 @@ public class ReviewServiceImpl implements ReviewService {
 		// TODO Auto-generated method stub
 		Integer page = findReviewVo.getPage();
 		Integer rows = findReviewVo.getRows();
+		if (page==null && rows==null) {
+			page=0;
+			rows=0;
+		}
 		String bookName = findReviewVo.getBookName();
 		String userName = findReviewVo.getUserName();
 		Page<Review> tempPage = new Page<>(page, rows);

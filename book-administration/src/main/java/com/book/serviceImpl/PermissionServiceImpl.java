@@ -251,10 +251,12 @@ public class PermissionServiceImpl implements PermissionService {
 				if (isParent) {
 					// 2
 					if (parentId != 0) {
+						deleteRolePermisson(id);
 						permissionMapper.deleteById(id);
 						deleteNext(id);
 						changeParent(parentId);
 					} else {
+						deleteRolePermisson(id);
 						permissionMapper.deleteById(id);
 						List<Permission> deleteNext = deleteNext(id);
 						if (deleteNext != null) {
@@ -264,12 +266,23 @@ public class PermissionServiceImpl implements PermissionService {
 						}
 					}
 				} else {
+					deleteRolePermisson(id);
 					permissionMapper.deleteById(id);
 					changeParent(parentId);
 				}
 			}
 		}
 	}
+	/**
+	 * @param id
+	 */
+	private void deleteRolePermisson(Long id) {
+		// TODO Auto-generated method stub
+		QueryWrapper<RolePermission> wrapper=new QueryWrapper<>();
+		wrapper.eq("permission_Id", id);
+		rolePermissionMapper.delete(wrapper);
+	}
+
 	@RequiresPermissions("sys_admin_update")
 	@RequiredLog("更新系统权限")
 	@Override
@@ -313,6 +326,7 @@ public class PermissionServiceImpl implements PermissionService {
 		List<Permission> selectList = permissionMapper.selectList(queryWrapper);
 		if (selectList.size() != 0) {
 			for (Permission permission : selectList) {
+				deleteRolePermisson(permission.getId());
 				permissionMapper.deleteById(permission.getId());
 			}
 			return selectList;

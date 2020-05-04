@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.book.annotation.RequiredLog;
 import com.book.mapper.BookMapper;
+import com.book.mapper.BorrowMapper;
 import com.book.mapper.CategoryMapper;
+import com.book.mapper.ReviewMapper;
 import com.book.pojo.Book;
 import com.book.pojo.BookCategory;
 import com.book.service.CategoryService;
@@ -32,7 +34,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	BookMapper bookMapper;
-
+	@Autowired
+	private BorrowMapper borrowMapper;
+	@Autowired
+	ReviewMapper reviewMapper;
 	@Override
 	@RequiresPermissions("sys_book_add")
 	@RequiredLog("新增图书类别")
@@ -142,18 +147,7 @@ public class CategoryServiceImpl implements CategoryService {
 		return catTrees;
 	}
 	
-	@RequiresPermissions("sys_book_delete")
-	@RequiredLog("删除图书类别")
-	@Override
-	public void delectCat(Long[] ids) {
-		// TODO Auto-generated method stub
-		for (Long id : ids) {
-			BookCategory selectById = categoryMapper.selectById(id);
-			if (selectById != null) {
-				delete(id, selectById);
-			}
-		}
-	}
+
 	@RequiresPermissions("sys_book_update")
 	@RequiredLog("更新图书类别")
 	@Override
@@ -252,20 +246,39 @@ public class CategoryServiceImpl implements CategoryService {
 
 	}
 
+	@RequiresPermissions("sys_book_delete")
+	@RequiredLog("删除图书类别")
+	@Override
+	public void delectCat(Long[] ids) {
+		// TODO Auto-generated method stub
+		for (Long id : ids) {
+			BookCategory selectById = categoryMapper.selectById(id);
+			if (selectById != null) {
+				delete(id, selectById);
+			}
+		}
+	}
 	
-	
-	private void delete(Long id, BookCategory selectById) {
+	private void delete(Long catId, BookCategory selectById) {
 		Long parentId = selectById.getParentId();
 		QueryWrapper<BookCategory> catQueryWrapper = new QueryWrapper<>();
 		QueryWrapper<Book> queryWrapperBook = new QueryWrapper<>();
 		QueryWrapper<BookCategory> catqueryWrapper2 = new QueryWrapper<>();
 		if (!selectById.getIsParent()) {
-			queryWrapperBook.eq("cid", id);
+			queryWrapperBook.eq("cid", catId);
+			
+			List<Long> bookIds = getBookIds(queryWrapperBook);
+			if (bookIds.size()!=0) {
+				reviewMapper.deleteBookByIds(bookIds);
+				borrowMapper.deleteBookByIds(bookIds);
+			}
+			
 			bookMapper.delete(queryWrapperBook);
-			categoryMapper.deleteById(id);
+			categoryMapper.deleteById(catId);
 			
 			BookCategory bookCategory=new BookCategory();
-			//2
+			
+			//更新改变父目录的状态
 			bookCategory.setId(parentId).setUpdated(new Date());
 			categoryMapper.updateById(bookCategory);
 			BookCategory selectParentTWo = categoryMapper.selectById(parentId);
@@ -280,7 +293,7 @@ public class CategoryServiceImpl implements CategoryService {
 			}
 			
 		} else if (parentId == 0) {
-			catQueryWrapper.eq("parent_id", id);
+			catQueryWrapper.eq("parent_id", catId);
 			List<BookCategory> selectList2 = categoryMapper.selectList(catQueryWrapper);
 			List<Long> cid2 = new ArrayList<>();
 			for (BookCategory bookCategory : selectList2) {
@@ -288,6 +301,13 @@ public class CategoryServiceImpl implements CategoryService {
 					Long id2 = bookCategory.getId();
 					QueryWrapper<Book> queryWrapperBook1 = new QueryWrapper<>();
 					queryWrapperBook1.eq("cid", id2);
+					
+					List<Long> bookIds = getBookIds(queryWrapperBook1);
+					if (bookIds.size()!=0) {
+						reviewMapper.deleteBookByIds(bookIds);
+						borrowMapper.deleteBookByIds(bookIds);
+					}
+					
 					bookMapper.delete(queryWrapperBook1);
 					categoryMapper.deleteById(id2);
 				} else {
@@ -303,6 +323,13 @@ public class CategoryServiceImpl implements CategoryService {
 				}
 				if (cid3.size() != 0) {
 					queryWrapperBook.in("cid", cid3);
+					
+					List<Long> bookIds = getBookIds(queryWrapperBook);
+					if (bookIds.size()!=0) {
+						reviewMapper.deleteBookByIds(bookIds);
+						borrowMapper.deleteBookByIds(bookIds);
+					}
+					
 					bookMapper.delete(queryWrapperBook);
 					categoryMapper.deleteBatchIds(cid3);
 				}
@@ -315,13 +342,15 @@ public class CategoryServiceImpl implements CategoryService {
 						ids.add(book.getId());
 					}
 					if (ids.size() != 0) {
+						reviewMapper.deleteBookByIds(ids);
+						borrowMapper.deleteBookByIds(ids);
 						bookMapper.deleteBatchIds(ids);
 					}
 				}
 				categoryMapper.deleteBatchIds(cid2);
 			}
 			QueryWrapper<Book> queryWrapperBook2 = new QueryWrapper<Book>();
-			queryWrapperBook2.in("cid", id);
+			queryWrapperBook2.in("cid", catId);
 			List<Book> selectList = bookMapper.selectList(queryWrapperBook2);
 			if (selectList != null) {
 				List<Long> ids = new ArrayList<>();
@@ -329,12 +358,14 @@ public class CategoryServiceImpl implements CategoryService {
 					ids.add(book.getId());
 				}
 				if (ids.size() != 0) {
+					reviewMapper.deleteBookByIds(ids);
+					borrowMapper.deleteBookByIds(ids);
 					bookMapper.deleteBatchIds(ids);
 				}
 			}
-			categoryMapper.deleteById(id);
+			categoryMapper.deleteById(catId);
 		} else {
-			catQueryWrapper.eq("parent_id", id);
+			catQueryWrapper.eq("parent_id", catId);
 			List<BookCategory> selectList = categoryMapper.selectList(catQueryWrapper);
 			List<Long> cids = new ArrayList<>();
 			for (BookCategory bookCategory : selectList) {
@@ -342,23 +373,47 @@ public class CategoryServiceImpl implements CategoryService {
 			}
 			if (cids.size()!=0) {
 			queryWrapperBook.in("cid", cids);
+			List<Long> bookIds = getBookIds(queryWrapperBook);
+			if (bookIds.size()!=0) {
+				reviewMapper.deleteBookByIds(bookIds);
+				borrowMapper.deleteBookByIds(bookIds);
+			}
 				bookMapper.delete(queryWrapperBook);
 				categoryMapper.deleteBatchIds(cids);
 			}
 			QueryWrapper<Book> queryWrapper=new QueryWrapper<>();
-			queryWrapper.eq("cid", id);
+			queryWrapper.eq("cid", catId);
+			List<Long> bookIds = getBookIds(queryWrapperBook);
 			List<Book> selectList2 = bookMapper.selectList(queryWrapper);
 			if (selectList2.size()!=0) {
 				for (Book book : selectList2) {
-					bookMapper.deleteById(book.getId());
+					bookIds.add(book.getId());
 				}
+				if (bookIds.size()!=0) {
+					reviewMapper.deleteBookByIds(bookIds);
+					borrowMapper.deleteBookByIds(bookIds);
+				}
+				bookMapper.deleteBatchIds(bookIds);
 			}
-			categoryMapper.deleteById(id);
+			categoryMapper.deleteById(catId);
 			
 			BookCategory bookCategory=new BookCategory();
 			bookCategory.setId(parentId).setUpdated(new Date());
 			categoryMapper.updateById(bookCategory);
 		}
+	}
+
+	/**
+	 * @param queryWrapperBook
+	 */
+	private List<Long> getBookIds(QueryWrapper<Book> queryWrapperBook) {
+		// TODO Auto-generated method stub
+		List<Book> selectList = bookMapper.selectList(queryWrapperBook);
+		List<Long>  bookIds=new ArrayList<>();
+		for (Book book : selectList) {
+			bookIds.add(book.getId());
+		}
+		return bookIds;
 	}
 
 	

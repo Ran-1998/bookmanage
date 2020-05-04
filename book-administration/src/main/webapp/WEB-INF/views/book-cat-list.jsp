@@ -254,7 +254,7 @@ $('#itemParamList').datagrid({
 												.confirm(
 														'确认',
 														'确定删除ID为 ' + ids
-																+ ' 的类别吗？',
+																+ ' 的类别与其对应的图书信息吗？',
 														function(r) {
 															if (r) {
 																var params = {

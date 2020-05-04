@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.book.annotation.CacheFind;
 import com.book.annotation.RequiredLog;
 import com.book.mapper.BookMapper;
+import com.book.mapper.BorrowMapper;
 import com.book.mapper.CategoryMapper;
 import com.book.mapper.ReviewMapper;
 import com.book.pojo.Book;
@@ -37,9 +38,10 @@ public class BookServiceImpl implements BookService {
 	private BookMapper bookMapper;
 	@Autowired
 	private ReviewMapper reviewMapper;
-
 	@Autowired
 	private CategoryMapper categoryMapper;
+	@Autowired
+	private BorrowMapper borrowMapper;
 	
 	private Date publicationdate;
 
@@ -126,9 +128,8 @@ public class BookServiceImpl implements BookService {
 	public void deleteBook(Long[] ids) {
 		// TODO Auto-generated method stub
 		List<Long> idList = Arrays.asList(ids);
-		/*
-		 * for (Long bookId : idList) { reviewMapper.de }
-		 */
+		reviewMapper.deleteBookByIds(idList);
+		borrowMapper.deleteBookByIds(idList);
 		bookMapper.deleteBatchIds(idList);
 	}
 

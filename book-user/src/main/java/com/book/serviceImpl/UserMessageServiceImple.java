@@ -99,7 +99,7 @@ public class UserMessageServiceImple implements UserMessageService{
 			//添加借阅表信息
 			Date date = new Date();
 			SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-			String vdate = dateFormat.format(new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000L));
+			String vdate = dateFormat.format(new Date(date.getTime() + 30 * 23 * 60 * 60 * 1000L));
 			userMsgDao.insertBorrow(user.getId(),bookId,dateFormat.format(date),vdate);
 			rows=1;
 		}

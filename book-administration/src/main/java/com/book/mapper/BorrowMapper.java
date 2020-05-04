@@ -25,4 +25,8 @@ public interface BorrowMapper extends BaseMapper<Borrow>{
 	 */
 	@Select("select * from user_borrow where user_Id = #{userId}")
 	List<Borrow> selectByUserId(@Param("userId") Long id);
+	
+	public void deleteBookByIds(@Param("idList") List<Long> idList);
+	public void deleteUserByIds(@Param("idList") List<Long> idList);
+	
 }

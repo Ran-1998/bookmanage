@@ -108,7 +108,7 @@ $.get("/user/query",  function(data) {
 					$.messager
 							.confirm(
 									'确认',
-									'确定删除ID为 ' + ids + ' 的用户吗？',
+									'确定删除ID为 ' + ids + ' 的用户与其对应的借阅信息吗？',
 									function(r) {
 										if (r) {
 											var params = {

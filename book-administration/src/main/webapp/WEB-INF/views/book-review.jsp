@@ -8,7 +8,7 @@
 			<th data-options="field:'ck',checkbox:true"></th>
 			<th data-options="field:'id',width:30">id</th>
 			<th
-				data-options="field:'bookId',width:100,formatter:KindEditorUtil.findBookName">评论信息名</th>
+				data-options="field:'bookId',width:100,formatter:KindEditorUtil.findBookName">图书名</th>
 			<th
 				data-options="field:'userId',width:50,formatter:KindEditorUtil.findUserName">用户名</th>
 			<th data-options="field:'review',width:100">评论信息</th>

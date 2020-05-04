@@ -189,6 +189,9 @@ public class RoleServiceImpl implements RoleService {
 	@RequiredLog("删除系统角色")
 	@Override
 	public void deleteRole(Long[] ids) {
+		
+		List<Long> idList = Arrays.asList(ids);
+		rolePermissionMapper.deleteRoleByIds(idList);
 		for (Long id : ids) {
 			QueryWrapper<Admin> queryWrapper=new QueryWrapper<Admin>();
 			queryWrapper.select("id").eq("role_Id", id);
@@ -199,15 +202,8 @@ public class RoleServiceImpl implements RoleService {
 				}
 			}
 			roleMapper.deleteById(id);
-			System.out.println(selectList);
 			}
-		/*
-		 * QueryWrapper<RolePermission> wrapper = new QueryWrapper<RolePermission>();
-		 * wrapper.in("role_Id", ids); rolePermissionMapper.delete(wrapper);
-		 * 
-		 * List<Long> idList = Arrays.asList(ids); roleMapper.deleteBatchIds(idList);
-		 */
-
+		
 	}
 
 }

@@ -168,7 +168,7 @@ function tab(date1, date2) {
 					$.messager
 							.confirm(
 									'确认',
-									'确定删除ID为 ' + ids + ' 的书籍吗？',
+									'确定删除ID为 ' + ids + ' 的书籍与其对应的借阅信息与图书评论信息吗？',
 									function(r) {
 										if (r) {
 											var params = {
