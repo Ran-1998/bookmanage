@@ -72,10 +72,6 @@ public class ReviewServiceImpl implements ReviewService {
 			}
 			queryWrapper.in("user_Id", ids);
 		}
-		if (page == null && rows == null) {
-			page = 0;
-			rows = 0;
-		}
 		IPage<Review> IPage = reviewMapper.selectPage(tempPage, queryWrapper);
 		int total = (int) IPage.getTotal();
 		List<Review> reviewList = IPage.getRecords();

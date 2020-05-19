@@ -27,7 +27,7 @@ public class QuartConfig {
 			return TriggerBuilder
 					.newTrigger()
 					.forJob(borrowJobDetail())
-					.withIdentity("orderQuartz")	//2.任务
+					.withIdentity("borrowQuartz")	//2.任务
 					.withSchedule(scheduleBuilder).build();
 	  }
 	 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.book.annotation.RequiredLog;
 import com.book.dao.UserMsgDao;
 import com.book.entity.Borrow;
 import com.book.entity.User;
@@ -86,7 +87,8 @@ public class UserMessageServiceImple implements UserMessageService{
     	if(row==0) throw new ServiceException("不成功");
 		return row;
 	}
-
+	
+	@RequiredLog("借阅图书")
 	@Override
 	public int borrowBook(Integer bookId) {
 		int rows=0;
@@ -105,7 +107,7 @@ public class UserMessageServiceImple implements UserMessageService{
 		}
 		return rows;
 	}
-
+	@RequiredLog("评论图书")
 	@Override
 	public int reviewBook(Integer bookId, String review) {
 		User user=(User)SecurityUtils.getSubject().getPrincipal();

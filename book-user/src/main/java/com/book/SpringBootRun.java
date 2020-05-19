@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.book.dao")
+@MapperScan("com.book.mapper")
 public class SpringBootRun {
 	
 	public static void main(String[] args) {
