@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<table class="easyui-treegrid" id="PerParamList" title="记录权限列表"
+<table class="easyui-treegrid" id="PerParamList" title="权限列表"
 	data-options="singleSelect:false,collapsible:true,url : '/permission/listAll',
 						method : 'get',
 						queryParams : {

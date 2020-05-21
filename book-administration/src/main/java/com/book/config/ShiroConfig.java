@@ -39,7 +39,7 @@ public class ShiroConfig {
         return sessionManager;
      
     }
-	
+	//过滤器
 	@Bean
 	public ShiroFilterFactoryBean shiroFilterFactory(SecurityManager securityManager) {
 		ShiroFilterFactoryBean sfBean = new ShiroFilterFactoryBean();

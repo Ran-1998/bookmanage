@@ -259,7 +259,7 @@
 					//获取选中的ID串中间使用","号分割
 					$
 							.get(
-									"/check/bookupadte",
+									"/check/bookupdate",
 									function(data) {
 										if (data.status == 201) {
 											$.messager
@@ -315,7 +315,7 @@
 
 					$
 							.get(
-									"/check/bookquery",
+									"/check/bookupdate",
 									function(data) {
 										if (data.status == 201) {
 											$.messager
