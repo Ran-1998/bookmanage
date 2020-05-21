@@ -35,12 +35,12 @@
 	style="width: 80%; height: 80%; padding: 10px;"></div>
 <script>
 
-$.get("/permission/listAll",  function(data) {
+$.get("/check/adminquery",  function(data) {
 	if (data.status == 201) {
 		$.messager.alert("提示", "没有权限或系统维护!");
-	} 
-}); 
-
+	}
+	else{}
+}); 	
 
 //var date=$('#PerParamList').datagrid('getData');
 	//alert(date);
@@ -70,30 +70,35 @@ $.get("/permission/listAll",  function(data) {
 		}
 	
 	function SearchPer(){
-		var ss=$('#per').val();
- 		console.log(ss);
- 		if(ss!=''){
- 		$.get("/permission/select",{name : ss} ,
-				function(data) {
-					$('#PerParamList').treegrid('loadData',data);
-				});
- 		}else{
- 			$.get("/permission/listAll",{id : 0} ,
- 					function(data) {
- 						$('#PerParamList').treegrid('loadData',data);
- 					});
- 	 		}
- 		
-		}
+		$.get("/check/adminquery",  function(data) {
+			if (data.status == 201) {
+				$.messager.alert("提示", "没有权限或系统维护!");
+			}
+			else{
+				var ss=$('#per').val();
+		 		console.log(ss);
+		 		if(ss!=''){
+		 		$.get("/permission/select",{name : ss} ,
+						function(data) {
+							$('#PerParamList').treegrid('loadData',data);
+						});
+		 		}else{
+		 			$.get("/permission/listAll",{id : 0} ,
+		 					function(data) {
+		 						$('#PerParamList').treegrid('loadData',data);
+		 					});
+		 	 		}
+				}
+		}); 
+			
+ 			}
 
 	
 	$('#PerParamList')
 			.treegrid(
 					{
 						onSelect : function(rowIndex, rowData) {
-							////console.log(rowIndex);
-							/* //console.log(!rowIndex.isParent);
-							//console.log(rowIndex.isParent && rowIndex.parentId!=0); */
+							
 								var id=$("#PerParamList").datagrid("getSelections");
 							if(rowIndex.isParent && rowIndex.parentId ==0){
 							//console.log(rowIndex);
@@ -184,7 +189,14 @@ $.get("/permission/listAll",  function(data) {
 									text : '新增',
 									iconCls : 'icon-add',
 									handler : function() {
+										$.get("/check/adminadd",  function(data) {
+											if (data.status == 201) {
+												$.messager.alert("提示", "没有权限或系统维护!");
+											}
+											else{
 										$(".tree-title:contains('系统权限新增')").parent().click();
+												}
+										}); 
 									}
 								},
 
@@ -192,33 +204,43 @@ $.get("/permission/listAll",  function(data) {
 									text : '编辑',
 									iconCls : 'icon-edit',
 									handler : function() {
-										//获取用户选中的数据
-										var ids = getSelectionscatIds();
-										if (ids.length == 0) {
-											$.messager.alert('提示', '必须选择一个记录才能编辑!');
-											return;
-										}
 
-										$("#permissonEditWindow")
-												.window(
-														{
-															onLoad : function() {
-																//回显数据
-																var data = $("#PerParamList").treegrid(
-																		"getSelections")[0];
-																////console.log(data);
-																$("#permissonEditWindow").form("load",
-																		data);
-																$.get(
-																				"/permission/setparent",
-																				{
-																					parent : data.parentId
-																				},
-																				function(result,
-																						status, xhr) {
-																				});
-															}
-														}).window("open");
+										$.get("/check/adminupdate",  function(data) {
+											if (data.status == 201) {
+												$.messager.alert("提示", "没有权限或系统维护!");
+											}
+											else{
+												//获取用户选中的数据
+												var ids = getSelectionscatIds();
+												if (ids.length == 0) {
+													$.messager.alert('提示', '必须选择一个记录才能编辑!');
+													return;
+												}
+
+												$("#permissonEditWindow")
+														.window(
+																{
+																	onLoad : function() {
+																		//回显数据
+																		var data = $("#PerParamList").treegrid(
+																				"getSelections")[0];
+																		////console.log(data);
+																		$("#permissonEditWindow").form("load",
+																				data);
+																		$.get(
+																						"/permission/setparent",
+																						{
+																							parent : data.parentId
+																						},
+																						function(result,
+																								status, xhr) {
+																						});
+																	}
+																}).window("open");
+												}
+										}); 	
+										
+										
 									}
 
 								},
@@ -226,55 +248,64 @@ $.get("/permission/listAll",  function(data) {
 									text : '删除',
 									iconCls : 'icon-cancel',
 									handler : function() {
-										var ids = getSelectionscatIds();
-										var ss = ids.split(",");
-										////console.log(ss);
 
-										if (ids.length == 0) {
-											$.messager.alert('提示', '未选中权限!');
-											return;
-										}
-										$.messager
-												.confirm(
-														'确认',
-														'确定删除ID为 ' + ids
-																+ ' 的权限吗？',
-														function(r) {
-															if (r) {
-																var params = {
-																	"ids" : ids
-																};
-																$
-																		.post(
-																				"/permission/delete",
-																				params,
-																				function(
-																						data) {
-																					if (data.status == 200) {
-																						for ( var i in ss) {
-																							$(
-																									'#PerParamList')
-																									.treegrid(
-																											'unselect',
-																											ss[i]);
-																						}
+										$.get("/check/admindelete",  function(data) {
+											if (data.status == 201) {
+												$.messager.alert("提示", "没有权限或系统维护!");
+											}
+											else{		
+												var ids = getSelectionscatIds();
+												var ss = ids.split(",");
+												////console.log(ss);
 
-																						$.messager
-																								.alert(
-																										'提示',
-																										'删除权限成功!',
-																										undefined,
-																										function() {
-																											//console.log(ids);
-																											$(
-																													"#PerParamList")
-																													.treegrid(
-																															"reload");
-																										});
-																					}
-																				});
-															}
-														});
+												if (ids.length == 0) {
+													$.messager.alert('提示', '未选中权限!');
+													return;
+												}
+												$.messager
+														.confirm(
+																'确认',
+																'确定删除ID为 ' + ids
+																		+ ' 的权限吗？',
+																function(r) {
+																	if (r) {
+																		var params = {
+																			"ids" : ids
+																		};
+																		$
+																				.post(
+																						"/permission/delete",
+																						params,
+																						function(
+																								data) {
+																							if (data.status == 200) {
+																								for ( var i in ss) {
+																									$(
+																											'#PerParamList')
+																											.treegrid(
+																													'unselect',
+																													ss[i]);
+																								}
+
+																								$.messager
+																										.alert(
+																												'提示',
+																												'删除权限成功!',
+																												undefined,
+																												function() {
+																													//console.log(ids);
+																													$(
+																															"#PerParamList")
+																															.treegrid(
+																																	"reload");
+																												});
+																							}
+																						});
+																	}
+																});
+												}
+										}); 	
+								
 									}
 								},
 								{

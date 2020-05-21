@@ -16,7 +16,7 @@
 			</tr>
 			<tr>
 				<td>角色:</td>
-				<td><input id="cc" name="roleId"></td>
+				<td><input id="ccc" name="roleId"></td>
 			</tr>
 			<tr>
 				<td>描述:</td>
@@ -35,7 +35,7 @@
 </div>
 <script>
 
-$('#cc').combobox({
+$('#ccc').combobox({
     url:'/role/qurey',
     valueField:'id',
     textField:'roleName'

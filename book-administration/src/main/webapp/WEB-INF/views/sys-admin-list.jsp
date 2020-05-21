@@ -29,16 +29,25 @@
 	data-options="modal:true,closed:true,iconCls:'icon-save',href:'/page/sys-admin-edit'"
 	style="width: 80%; height: 80%; padding: 10px;"></div>
 <script>
-$.get("/admin/query",  function(data) {
+$.get("/check/adminquery",  function(data) {
 	if (data.status == 201) {
 		$.messager.alert("提示", "没有权限或系统维护!");
-	} 
+	}
+	else{}
 }); 	
 	function SearchAdmin() {
-		$('#sysAdminList').datagrid('load', {
-			roleId : $("#roleId").combobox("getValue"),
-			name : $("#name").textbox("getValue")
-		});
+
+		$.get("/check/adminquery",  function(data) {
+			if (data.status == 201) {
+				$.messager.alert("提示", "没有权限或系统维护!");
+			}
+			else{
+				$('#sysAdminList').datagrid('load', {
+					roleId : $("#roleId").combobox("getValue"),
+					name : $("#name").textbox("getValue")
+				});}
+		}); 
+		
 	}
 	$('#roleId').combobox({
 		url : '/role/qurey',
@@ -61,81 +70,109 @@ $.get("/admin/query",  function(data) {
 				text : '新增',
 				iconCls : 'icon-add',
 				handler : function() {
+
+					$.get("/check/adminadd",  function(data) {
+						if (data.status == 201) {
+							$.messager.alert("提示", "没有权限或系统维护!");
+						}
+						else{
 					$(".tree-title:contains('系统用户新增')").parent().click();
+							}
+					}); 	
 				}
 			},
 			{
 				text : '编辑',
 				iconCls : 'icon-edit',
 				handler : function() {
-					//获取用户选中的数据
-					var ids = getSelectionAdminIds();
-					if (ids.length == 0) {
-						$.messager.alert('提示', '必须选择一个用户才能编辑!');
-						return;
-					}
-					if (ids.indexOf(',') > 0) {
-						$.messager.alert('提示', '只能选择一个用户!');
-						return;
-					}
 
-					$("#AdminEditWindow").window(
-							{
-								onLoad : function() {
-									//回显数据
-									var data = $("#sysAdminList").datagrid(
-											"getSelections")[0];
-									//console.log(data);
-									data.password = null;
-									$("#AdminEditWindow").form("load", data);
-								}
-							}).window("open");
+					$.get("/check/adminupdate",  function(data) {
+						if (data.status == 201) {
+							$.messager.alert("提示", "没有权限或系统维护!");
+						}
+						else{
+							//获取用户选中的数据
+							var ids = getSelectionAdminIds();
+							if (ids.length == 0) {
+								$.messager.alert('提示', '必须选择一个用户才能编辑!');
+								return;
+							}
+							if (ids.indexOf(',') > 0) {
+								$.messager.alert('提示', '只能选择一个用户!');
+								return;
+							}
+
+							$("#AdminEditWindow").window(
+									{
+										onLoad : function() {
+											//回显数据
+											var data = $("#sysAdminList").datagrid(
+													"getSelections")[0];
+											//console.log(data);
+											data.password = null;
+											$("#AdminEditWindow").form("load", data);
+										}
+									}).window("open");
+							}
+					}); 
+					
+				
 				}
 			},
 			{
 				text : '删除',
 				iconCls : 'icon-cancel',
 				handler : function() {
-					var ids = getSelectionAdminIds();
-					if (ids.length == 0) {
-						$.messager.alert('提示', '未选中用户!');
-						return;
-					}
-					$.messager
-							.confirm(
-									'确认',
-									'确定删除ID为 ' + ids + ' 的用户吗？',
-									function(r) {
-										if (r) {
-											var params = {
-												"ids" : ids
-											};
-											$
-													.post(
-															"/admin/delete",
-															params,
-															function(data) {
-																if (data.status == 200) {
-																	$.messager
-																			.alert(
-																					'提示',
-																					'删除用户成功!',
-																					undefined,
-																					function() {
-																						$(
-																								"#sysAdminList")
-																								.datagrid(
-																										"reload");
-																					});
-																} else {
-																	$.messager
-																			.alert(
-																					"提示",
-																					data.msg);
-																}
-															});
-										}
-									});
+					$.get("/check/admindelete",  function(data) {
+						if (data.status == 201) {
+							$.messager.alert("提示", "没有权限或系统维护!");
+						}
+						else{
+
+							
+							var ids = getSelectionAdminIds();
+							if (ids.length == 0) {
+								$.messager.alert('提示', '未选中用户!');
+								return;
+							}
+							$.messager
+									.confirm(
+											'确认',
+											'确定删除ID为 ' + ids + ' 的用户吗？',
+											function(r) {
+												if (r) {
+													var params = {
+														"ids" : ids
+													};
+													$
+															.post(
+																	"/admin/delete",
+																	params,
+																	function(data) {
+																		if (data.status == 200) {
+																			$.messager
+																					.alert(
+																							'提示',
+																							'删除用户成功!',
+																							undefined,
+																							function() {
+																								$(
+																										"#sysAdminList")
+																										.datagrid(
+																												"reload");
+																							});
+																		} else {
+																			$.messager
+																					.alert(
+																							"提示",
+																							data.msg);
+																		}
+																	});
+												}
+											});
+							}
+					}); 
+
 				}
 			}, {
 				text : '重置/刷新',

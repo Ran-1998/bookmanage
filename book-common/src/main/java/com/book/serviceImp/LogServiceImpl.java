@@ -3,6 +3,7 @@ package com.book.serviceImp;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +32,8 @@ public class LogServiceImpl implements LogService{
 		// TODO Auto-generated method stub
 		logMapper.insert(log);
 	}
-	
-	//@RequiredLog("查询日志")
+	@RequiresPermissions("sys_log_view")
+	@RequiredLog("查询日志")
 	@Override
 	public EasyUITable findLog(FindLogVo findLogVo) {
 		// TODO Auto-generated method stub
@@ -65,6 +66,7 @@ public class LogServiceImpl implements LogService{
 		return ey;
 	}
 	
+	@RequiresPermissions("sys_log_delete")
 	@RequiredLog("删除日志")
 	@Override
 	public void deleteLog(Long[] ids) {

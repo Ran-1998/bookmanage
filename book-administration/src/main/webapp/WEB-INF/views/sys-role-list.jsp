@@ -95,36 +95,47 @@
 
 		}
 	});
-	$.get("/permission/findPerByRole",  function(data) {
-		if (data.status == 201 ) {
+	$.get("/check/adminquery",  function(data) {
+		if (data.status == 201) {
 			$.messager.alert("提示", "没有权限或系统维护!");
-		} 
-	}); 
+		}
+		else{}
+	}); 	
 	$(function() {
 		$('#edit').bind('click', function() {
-			//获取角色选中的数据
-			var ids = getRoleSelectionsIds();
-			if (ids.length == 0) {
-				$.messager.alert('提示', '必须选择一个角色才能编辑!');
-				return;
-			}
-			if (ids.indexOf(',') > 0) {
-				$.messager.alert('提示', '只能选择一个角色!');
-				return;
-			}
-			$.post("/permission/setRoleId", {
-				roleId : ids
-			}, function(data) {
 
-			});
-			$("#RoleEditWindow").window({
-				onLoad : function() {
-					//回显数据
-					var data = $("#roleList").datagrid("getSelections")[0];
-					//console.log(data);
-					$("#RoleEditWindow").form("load", data);
+
+			$.get("/check/adminupdate",  function(data) {
+				if (data.status == 201) {
+					$.messager.alert("提示", "没有权限或系统维护!");
 				}
-			}).window("open");
+				else{
+					//获取角色选中的数据
+					var ids = getRoleSelectionsIds();
+					if (ids.length == 0) {
+						$.messager.alert('提示', '必须选择一个角色才能编辑!');
+						return;
+					}
+					if (ids.indexOf(',') > 0) {
+						$.messager.alert('提示', '只能选择一个角色!');
+						return;
+					}
+					$.post("/permission/setRoleId", {
+						roleId : ids
+					}, function(data) {
+
+					});
+					$("#RoleEditWindow").window({
+						onLoad : function() {
+							//回显数据
+							var data = $("#roleList").datagrid("getSelections")[0];
+							//console.log(data);
+							$("#RoleEditWindow").form("load", data);
+						}
+					}).window("open");
+					}
+			}); 
+	
 		});
 
 		$('#reload').bind('click', function() {
@@ -137,62 +148,88 @@
 		});
 
 		$('#add').bind('click', function() {
+
+			$.get("/check/adminadd",  function(data) {
+				if (data.status == 201) {
+					$.messager.alert("提示", "没有权限或系统维护!");
+				}
+				else{
 			$(".tree-title:contains('系统角色新增')").parent().click();
+					}
+			}); 
+			
 		});
 		$('#delete')
 				.bind(
 						'click',
 						function() {
-							var ids = getRoleSelectionsIds();
-							if (ids.length == 0) {
-								$.messager.alert('提示', '未选中角色!');
-								return;
-							}
-							$.messager
-									.confirm(
-											'确认',
-											'确定删除ID为 ' + ids + ' 的角色吗？',
-											function(r) {
-												if (r) {
-													var params = {
-														"ids" : ids
-													};
-													$
-															.post(
-																	"/role/delete",
-																	params,
-																	function(
-																			data) {
-																		if (data.status == 200) {
-																			$.messager
-																					.alert(
-																							'提示',
-																							'删除角色成功!',
-																							undefined,
-																							function() {
-																								$(
-																										"#roleList")
-																										.datagrid(
-																												"reload");
-																							});
-																		} else {
-																			$.messager
-																					.alert(
-																							"提示",
-																							data.msg);
-																		}
-																	});
-												}
-											});
 
+							$.get("/check/admindelete",  function(data) {
+								if (data.status == 201) {
+									$.messager.alert("提示", "没有权限或系统维护!");
+								}
+								else{
+									var ids = getRoleSelectionsIds();
+									if (ids.length == 0) {
+										$.messager.alert('提示', '未选中角色!');
+										return;
+									}
+									$.messager
+											.confirm(
+													'确认',
+													'确定删除ID为 ' + ids + ' 的角色吗？',
+													function(r) {
+														if (r) {
+															var params = {
+																"ids" : ids
+															};
+															$
+																	.post(
+																			"/role/delete",
+																			params,
+																			function(
+																					data) {
+																				if (data.status == 200) {
+																					$.messager
+																							.alert(
+																									'提示',
+																									'删除角色成功!',
+																									undefined,
+																									function() {
+																										$(
+																												"#roleList")
+																												.datagrid(
+																														"reload");
+																									});
+																				} else {
+																					$.messager
+																							.alert(
+																									"提示",
+																									data.msg);
+																				}
+																			});
+														}
+													});
+
+									}
+							}); 	
+							
+						
 						});
 	});
 
 	function SearchRole() {
 		//console.log($("#SearchRole").combobox("getValue"))
-		$('#roleList').datagrid('load', {
-			name : $("#name").textbox("getValue")
+		$.get("/check/adminquery", function(data) {
+			if (data.status == 201) {
+				$.messager.alert("提示", "没有权限或系统维护!");
+			} else {
+				$('#roleList').datagrid('load', {
+					name : $("#name").textbox("getValue")
+				});
+			}
 		});
+
 	}
 	function getRoleSelectionsIds() {
 		var roleList = $("#roleList");

@@ -33,10 +33,11 @@
 	data-options="modal:true,closed:true,iconCls:'icon-save',href:'/page/book-cat-edit'"
 	style="width: 80%; height: 80%; padding: 10px;"></div>
 <script>
-$.get("/book/cat/listAll",  function(data) {
+$.get("/check/bookquery",  function(data) {
 	if (data.status == 201) {
 		$.messager.alert("提示", "没有权限或系统维护!");
 	} 
+	else{}
 }); 	
 var bcindex = 0;
 function error() {
@@ -77,19 +78,26 @@ $('#itemParamList').datagrid({
 		}
 	
 	function SearchCat(){
-		var ss=$('#catname').val();
- 		console.log(ss);
- 		if(ss!=''){
- 		$.get("/book/cat/select",{name : ss} ,
-				function(data) {
-					$('#itemParamList').treegrid('loadData',data);
-				});
- 		}else{
- 			$.get("/book/cat/listAll",{id : 0} ,
- 					function(data) {
- 						$('#itemParamList').treegrid('loadData',data);
- 					});
- 	 		}
+		$.get("/check/bookquery",  function(data) {
+			if (data.status == 201) {
+				$.messager.alert("提示", "没有权限或系统维护!");
+			} 
+			else{
+				var ss=$('#catname').val();
+		 		console.log(ss);
+		 		if(ss!=''){
+		 		$.get("/book/cat/select",{name : ss} ,
+						function(data) {
+							$('#itemParamList').treegrid('loadData',data);
+						});
+		 		}else{
+		 			$.get("/book/cat/listAll",{id : 0} ,
+		 					function(data) {
+		 						$('#itemParamList').treegrid('loadData',data);
+		 					});
+		 	 		}
+				}
+		}); 
  		
 		}
 
@@ -191,7 +199,14 @@ $('#itemParamList').datagrid({
 									text : '新增',
 									iconCls : 'icon-add',
 									handler : function() {
+										$.get("/check/bookadd",  function(data) {
+											if (data.status == 201) {
+												$.messager.alert("提示", "没有权限或系统维护!");
+											} 
+											else{
 										$(".tree-title:contains('新增类别')").parent().click();
+												}
+										});
 									}
 								},
 
@@ -199,42 +214,51 @@ $('#itemParamList').datagrid({
 									text : '编辑',
 									iconCls : 'icon-edit',
 									handler : function() {
-										//获取用户选中的数据
-										var ids = getSelectionscatIds();
-										if (ids.length == 0) {
-											$.messager.alert('提示', '必须选择一个图书才能编辑!');
-											return;
-										}
+										$.get("/check/bookupdate",  function(data) {
+											if (data.status == 201) {
+												$.messager.alert("提示", "没有权限或系统维护!");
+											} 
+											else{
+												//获取用户选中的数据
+												var ids = getSelectionscatIds();
+												if (ids.length == 0) {
+													$.messager.alert('提示', '必须选择一个图书才能编辑!');
+													return;
+												}
 
-										$("#catEditWindow")
-												.window(
-														{
-															onLoad : function() {
-																//回显数据
-																var data = $("#itemParamList").treegrid(
-																		"getSelections")[0];
-																//console.log(data);
-																$("#catEditForm").form("load",
-																		data);
-																$
-																		.get(
-																				"/book/cat/queryCatName",
-																				{
-																					cid : data.parentId
-																				},
-																				function(result,
-																						status, xhr) {
-																					var catName = result;
-																					KindEditorUtil
-																							.init({
-																								"cid" : catName,
-																								fun : function(
-																										node) {
-																								}
-																							});
-																				});
-															}
-														}).window("open");
+												$("#catEditWindow")
+														.window(
+																{
+																	onLoad : function() {
+																		//回显数据
+																		var data = $("#itemParamList").treegrid(
+																				"getSelections")[0];
+																		//console.log(data);
+																		$("#catEditForm").form("load",
+																				data);
+																		$
+																				.get(
+																						"/book/cat/queryCatName",
+																						{
+																							cid : data.parentId
+																						},
+																						function(result,
+																								status, xhr) {
+																							var catName = result;
+																							KindEditorUtil
+																									.init({
+																										"cid" : catName,
+																										fun : function(
+																												node) {
+																										}
+																									});
+																						});
+																	}
+																}).window("open");
+												}
+										});
+										
+									
 									}
 
 								},
@@ -242,56 +266,66 @@ $('#itemParamList').datagrid({
 									text : '删除',
 									iconCls : 'icon-cancel',
 									handler : function() {
-										var ids = getSelectionscatIds();
-										var ss = ids.split(",");
-										//console.log(ss);
+										$.get("/check/bookdelete",  function(data) {
+											if (data.status == 201) {
+												$.messager.alert("提示", "没有权限或系统维护!");
+											} 
+											else{
+												
+												var ids = getSelectionscatIds();
+												var ss = ids.split(",");
+												//console.log(ss);
 
-										if (ids.length == 0) {
-											$.messager.alert('提示', '未选中类别!');
-											return;
-										}
-										$.messager
-												.confirm(
-														'确认',
-														'确定删除ID为 ' + ids
-																+ ' 的类别与其对应的图书信息吗？',
-														function(r) {
-															if (r) {
-																var params = {
-																	"ids" : ids
-																};
-																$
-																		.post(
-																				"/book/cat/delete",
-																				params,
-																				function(
-																						data) {
-																					if (data.status == 200) {
-																						for ( var i in ss) {
-																							$(
-																									'#itemParamList')
-																									.treegrid(
-																											'unselect',
-																											ss[i]);
-																						}
+												if (ids.length == 0) {
+													$.messager.alert('提示', '未选中类别!');
+													return;
+												}
+												$.messager
+														.confirm(
+																'确认',
+																'确定删除ID为 ' + ids
+																		+ ' 的类别与其对应的图书信息吗？',
+																function(r) {
+																	if (r) {
+																		var params = {
+																			"ids" : ids
+																		};
+																		$
+																				.post(
+																						"/book/cat/delete",
+																						params,
+																						function(
+																								data) {
+																							if (data.status == 200) {
+																								for ( var i in ss) {
+																									$(
+																											'#itemParamList')
+																											.treegrid(
+																													'unselect',
+																													ss[i]);
+																								}
 
-																						$.messager
-																								.alert(
-																										'提示',
-																										'删除类别成功!',
-																										undefined,
-																										function() {
-																											console
-																													.log(ids);
-																											$(
-																													"#itemParamList")
-																													.treegrid(
-																															"reload");
-																										});
-																					}
-																				});
-															}
-														});
+																								$.messager
+																										.alert(
+																												'提示',
+																												'删除类别成功!',
+																												undefined,
+																												function() {
+																													console
+																															.log(ids);
+																													$(
+																															"#itemParamList")
+																															.treegrid(
+																																	"reload");
+																												});
+																							}
+																						});
+																	}
+																});
+												}
+										}); 
+
+									
 									}
 								},
 								{

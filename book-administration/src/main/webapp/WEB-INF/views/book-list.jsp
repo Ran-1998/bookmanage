@@ -42,14 +42,14 @@
 	data-options="modal:true,closed:true,iconCls:'icon-save',href:'/page/book-edit'"
 	style="width: 80%; height: 80%; padding: 10px;"></div>
 <script>
+	$.get("/check/bookquery", function(data) {
+		if (data.status == 201) {
+			$.messager.alert("提示", "没有权限或系统维护!");
+		} else {
+		}
+	});
 
-$.get("/book/query",  function(data) {
-	if (data.status == 201) {
-		$.messager.alert("提示", "没有权限或系统维护!");
-	} 
-}); 
-
-function tab(date1, date2) {
+	function tab(date1, date2) {
 		var oDate1 = new Date(date1);
 		var oDate2 = new Date(date2);
 		if (oDate1.getTime() > oDate2.getTime()) {
@@ -59,28 +59,34 @@ function tab(date1, date2) {
 		}
 	}
 	function Search() {
-		//console.log($("#search").combobox("getValue"))
-		if (($("#date1").combobox("getValue") != "" && $("#date2").combobox(
-				"getValue") == "")
-				|| ($("#date1").combobox("getValue") == "" && $("#date2")
-						.combobox("getValue") != "")) {
-			$.messager.alert('提示', '请输入起始时间');
-		}
-		var big = tab($("#date1").combobox("getValue"), $("#date2").combobox(
-				"getValue"));
-	if(big){
-		$('#bookList').datagrid('load', {
-			catid : $("#cat").combobox("getValue"),
-			data1 : $("#date1").combobox("getValue"),
-			data2 : $("#date2").combobox("getValue"),
-			author : $("#author").textbox("getValue"),
-			name : $("#name").textbox("getValue")
+
+		$.get("/check/bookquery", function(data) {
+			if (data.status == 201) {
+				$.messager.alert("提示", "没有权限或系统维护!");
+			} else {
+				//console.log($("#search").combobox("getValue"))
+				if (($("#date1").combobox("getValue") != "" && $("#date2")
+						.combobox("getValue") == "")
+						|| ($("#date1").combobox("getValue") == "" && $(
+								"#date2").combobox("getValue") != "")) {
+					$.messager.alert('提示', '请输入起始时间');
+				}
+				var big = tab($("#date1").combobox("getValue"), $("#date2")
+						.combobox("getValue"));
+				if (big) {
+					$('#bookList').datagrid('load', {
+						catid : $("#cat").combobox("getValue"),
+						data1 : $("#date1").combobox("getValue"),
+						data2 : $("#date2").combobox("getValue"),
+						author : $("#author").textbox("getValue"),
+						name : $("#name").textbox("getValue")
+					});
+				} else {
+					$.messager.alert('提示', '请输入正确时间');
+					$('#selectForm').form('reset');
+				}
+			}
 		});
-		}
-	else{
-		$.messager.alert('提示', '请输入正确时间');
-		$('#selectForm').form('reset');
-		}
 
 	}
 	function getSelectionsIds() {
@@ -99,107 +105,150 @@ function tab(date1, date2) {
 				text : '新增',
 				iconCls : 'icon-add',
 				handler : function() {
-					$(".tree-title:contains('新增图书')").parent().click();
+					$.get("/check/bookadd", function(data) {
+						if (data.status == 201) {
+							$.messager.alert("提示", "没有权限或系统维护!");
+						} else {
+							$(".tree-title:contains('新增图书')").parent().click();
+						}
+					});
+
 				}
 			},
 			{
 				text : '编辑',
 				iconCls : 'icon-edit',
 				handler : function() {
-					//获取用户选中的数据
-					var ids = getSelectionsIds();
-					if (ids.length == 0) {
-						$.messager.alert('提示', '必须选择一个图书才能编辑!');
-						return;
-					}
-					if (ids.indexOf(',') > 0) {
-						$.messager.alert('提示', '只能选择一个图书!');
-						return;
-					}
+					$
+							.get(
+									"/check/bookupdate",
+									function(data) {
+										if (data.status == 201) {
+											$.messager
+													.alert("提示", "没有权限或系统维护!");
+										} else {
+											//获取用户选中的数据
+											var ids = getSelectionsIds();
+											if (ids.length == 0) {
+												$.messager.alert('提示',
+														'必须选择一个图书才能编辑!');
+												return;
+											}
+											if (ids.indexOf(',') > 0) {
+												$.messager.alert('提示',
+														'只能选择一个图书!');
+												return;
+											}
 
-					$("#itemEditWindow")
-							.window(
-									{
-										onLoad : function() {
-											//回显数据
-											var data = $("#bookList").datagrid(
-													"getSelections")[0];
-											//console.log(data);
-											$("#itemeEditForm").form("load",
-													data);
-											itemEditEditor
-													.html(data.briefintroduction);
-
-											$
-													.get(
-															"/book/cat/queryCatName",
+											$("#itemEditWindow")
+													.window(
 															{
-																cid : data.cid
-															},
-															function(result,
-																	status, xhr) {
-																var catName = result;
-																KindEditorUtil
-																		.init({
-																			"pics" : data.image,
-																			"cid" : catName,
-																			fun : function(
-																					node) {
-																				KindEditorUtil
-																						.changeItemParam(
-																								node,
-																								"itemeEditForm");
-																			}
-																		});
-															});
+																onLoad : function() {
+																	//回显数据
+																	var data = $(
+																			"#bookList")
+																			.datagrid(
+																					"getSelections")[0];
+																	//console.log(data);
+																	$(
+																			"#itemeEditForm")
+																			.form(
+																					"load",
+																					data);
+																	itemEditEditor
+																			.html(data.briefintroduction);
+
+																	$
+																			.get(
+																					"/book/cat/queryCatName",
+																					{
+																						cid : data.cid
+																					},
+																					function(
+																							result,
+																							status,
+																							xhr) {
+																						var catName = result;
+																						KindEditorUtil
+																								.init({
+																									"pics" : data.image,
+																									"cid" : catName,
+																									fun : function(
+																											node) {
+																										KindEditorUtil
+																												.changeItemParam(
+																														node,
+																														"itemeEditForm");
+																									}
+																								});
+																					});
+																}
+															}).window("open");
 										}
-									}).window("open");
+
+									});
 				}
 			},
 			{
 				text : '删除',
 				iconCls : 'icon-cancel',
 				handler : function() {
-					var ids = getSelectionsIds();
-					if (ids.length == 0) {
-						$.messager.alert('提示', '未选中书籍!');
-						return;
-					}
-					$.messager
-							.confirm(
-									'确认',
-									'确定删除ID为 ' + ids + ' 的书籍与其对应的借阅信息与图书评论信息吗？',
-									function(r) {
-										if (r) {
-											var params = {
-												"ids" : ids
-											};
-											$
-													.post(
-															"/book/delete",
-															params,
-															function(data) {
-																if (data.status == 200) {
-																	$.messager
-																			.alert(
-																					'提示',
-																					'删除书籍成功!',
-																					undefined,
-																					function() {
-																						$(
-																								"#bookList")
-																								.datagrid(
-																										"reload");
+
+					$
+							.get(
+									"/check/bookdelete",
+									function(data) {
+										if (data.status == 201) {
+											$.messager
+													.alert("提示", "没有权限或系统维护!");
+										} else {
+											var ids = getSelectionsIds();
+											if (ids.length == 0) {
+												$.messager
+														.alert('提示', '未选中书籍!');
+												return;
+											}
+											$.messager
+													.confirm(
+															'确认',
+															'确定删除ID为 '
+																	+ ids
+																	+ ' 的书籍与其对应的借阅信息与图书评论信息吗？',
+															function(r) {
+																if (r) {
+																	var params = {
+																		"ids" : ids
+																	};
+																	$
+																			.post(
+																					"/book/delete",
+																					params,
+																					function(
+																							data) {
+																						if (data.status == 200) {
+																							$.messager
+																									.alert(
+																											'提示',
+																											'删除书籍成功!',
+																											undefined,
+																											function() {
+																												$(
+																														"#bookList")
+																														.datagrid(
+																																"reload");
+																											});
+																						} else {
+																							$.messager
+																									.alert(
+																											"提示",
+																											data.msg);
+																						}
 																					});
-																} else {
-																	$.messager
-																			.alert(
-																					"提示",
-																					data.msg);
 																}
 															});
 										}
 									});
+
 				}
 			},
 			'-',
@@ -208,82 +257,111 @@ function tab(date1, date2) {
 				iconCls : 'icon-remove',
 				handler : function() {
 					//获取选中的ID串中间使用","号分割
-					var ids = getSelectionsIds();
-					if (ids.length == 0) {
-						$.messager.alert('提示', '未选中图书!');
-						return;
-					}
-					$.messager
-							.confirm(
-									'确认',
-									'确定下架ID为 ' + ids + ' 的图书吗？',
-									function(r) {
-										if (r) {
-											var params = {
-												"ids" : ids
-											};
-											$
-													.post(
-															"/book/instock",
-															params,
-															function(data) {
-																if (data.status == 200) {
-																	$.messager
-																			.alert(
-																					'提示',
-																					'下架图书成功!',
-																					undefined,
-																					function() {
-																						$(
-																								"#bookList")
-																								.datagrid(
-																										"reload");
+					$
+							.get(
+									"/check/bookupadte",
+									function(data) {
+										if (data.status == 201) {
+											$.messager
+													.alert("提示", "没有权限或系统维护!");
+										} else {
+											var ids = getSelectionsIds();
+											if (ids.length == 0) {
+												$.messager
+														.alert('提示', '未选中图书!');
+												return;
+											}
+											$.messager
+													.confirm(
+															'确认',
+															'确定下架ID为 ' + ids
+																	+ ' 的图书吗？',
+															function(r) {
+																if (r) {
+																	var params = {
+																		"ids" : ids
+																	};
+																	$
+																			.post(
+																					"/book/instock",
+																					params,
+																					function(
+																							data) {
+																						if (data.status == 200) {
+																							$.messager
+																									.alert(
+																											'提示',
+																											'下架图书成功!',
+																											undefined,
+																											function() {
+																												$(
+																														"#bookList")
+																														.datagrid(
+																																"reload");
+																											});
+																						}
 																					});
 																}
 															});
 										}
 									});
+
 				}
 			},
 			{
 				text : '上架',
 				iconCls : 'icon-remove',
 				handler : function() {
-					var ids = getSelectionsIds();
-					if (ids.length == 0) {
-						$.messager.alert('提示', '未选中图书!');
-						return;
-					}
-					$.messager
-							.confirm(
-									'确认',
-									'确定上架ID为 ' + ids + ' 的图书吗？',
-									function(r) {
-										if (r) {
-											var params = {
-												"ids" : ids
-											};
-											$
-													.post(
-															"/book/reshelf",
-															params,
-															function(data) {
-																if (data.status == 200) {
-																	$.messager
-																			.alert(
-																					'提示',
-																					'上架图书成功!',
-																					undefined,
-																					function() {
-																						$(
-																								"#bookList")
-																								.datagrid(
-																										"reload");
+
+					$
+							.get(
+									"/check/bookquery",
+									function(data) {
+										if (data.status == 201) {
+											$.messager
+													.alert("提示", "没有权限或系统维护!");
+										} else {
+											var ids = getSelectionsIds();
+											if (ids.length == 0) {
+												$.messager
+														.alert('提示', '未选中图书!');
+												return;
+											}
+											$.messager
+													.confirm(
+															'确认',
+															'确定上架ID为 ' + ids
+																	+ ' 的图书吗？',
+															function(r) {
+																if (r) {
+																	var params = {
+																		"ids" : ids
+																	};
+																	$
+																			.post(
+																					"/book/reshelf",
+																					params,
+																					function(
+																							data) {
+																						if (data.status == 200) {
+																							$.messager
+																									.alert(
+																											'提示',
+																											'上架图书成功!',
+																											undefined,
+																											function() {
+																												$(
+																														"#bookList")
+																														.datagrid(
+																																"reload");
+																											});
+																						}
 																					});
 																}
 															});
 										}
 									});
+
 				}
 			}, {
 				text : '重置/刷新',

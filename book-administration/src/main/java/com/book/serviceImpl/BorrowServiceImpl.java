@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,7 @@ public class BorrowServiceImpl implements BorrowService {
 	@Autowired
 	private UserMapper userMapper;
 	
+	@RequiresPermissions("sys_user_view")
 	@RequiredLog("查询借阅记录")
 	@Override
 	public EasyUITable findUser(FindBorrowVo findBorrowVo) {
@@ -107,6 +109,8 @@ public class BorrowServiceImpl implements BorrowService {
 		EasyUITable ey = new EasyUITable(total, userLists);
 		return ey;
 	}
+	
+	@RequiresPermissions("sys_user_delete")
 	@RequiredLog("删除借阅记录")
 	@Override
 	public void deleteBorrow(Long[] ids) {
@@ -114,7 +118,8 @@ public class BorrowServiceImpl implements BorrowService {
 		List<Long> idList = Arrays.asList(ids);
 		borrowMapper.deleteBatchIds(idList);
 	}
-
+	
+	@RequiresPermissions("sys_user_update")
 	@RequiredLog("还书")
 	@Override
 	public void returnBook(Long[] ids, Long[] bookIds) {
@@ -134,6 +139,8 @@ public class BorrowServiceImpl implements BorrowService {
 		bookMapper.update(book, bookupdateWrapper);
 
 	}
+	
+	@RequiresPermissions("sys_user_update")
 	@RequiredLog("延时还书")
 	@Override
 	public void delayTime(Long[] ids, Long day, String[] returnTime) {

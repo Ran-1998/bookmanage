@@ -30,18 +30,25 @@
 	data-options="modal:true,closed:true,iconCls:'icon-save',href:'/page/book-edit'"
 	style="width: 80%; height: 80%; padding: 10px;"></div>
 <script>
-	$.get("/book/review/query", function(data) {
+	$.get("/check/bookquery", function(data) {
 		if (data.status == 201) {
 			$.messager.alert("提示", "没有权限或系统维护!");
+		} else {
 		}
 	});
 	function reviewSearch() {
 		//console.log($("#reviewSearch").combobox("getValue"))
-
-		$('#reviewList').datagrid('load', {
-			bookName : $("#bookName").textbox("getValue"),
-			UserName : $("#UserName").textbox("getValue")
+		$.get("/check/bookquery", function(data) {
+			if (data.status == 201) {
+				$.messager.alert("提示", "没有权限或系统维护!");
+			} else {
+				$('#reviewList').datagrid('load', {
+					bookName : $("#bookName").textbox("getValue"),
+					UserName : $("#UserName").textbox("getValue")
+				});
+			}
 		});
+
 	}
 	function getSelectionsreviewIds() {
 		var reviewList = $("#reviewList");
@@ -59,46 +66,61 @@
 				text : '删除',
 				iconCls : 'icon-cancel',
 				handler : function() {
-					var ids = getSelectionsreviewIds();
-					if (ids.length == 0) {
-						$.messager.alert('提示', '未选中评论信息!');
-						return;
-					}
-					$.messager
-							.confirm(
-									'确认',
-									'确定删除ID为 ' + ids + ' 的评论信息吗？',
-									function(r) {
-										if (r) {
-											var params = {
-												"ids" : ids
-											};
-											$
-													.post(
-															"/book/review/delete",
-															params,
-															function(data) {
-																if (data.status == 200) {
-																	$.messager
-																			.alert(
-																					'提示',
-																					'删除评论信息成功!',
-																					undefined,
-																					function() {
-																						$(
-																								"#reviewList")
-																								.datagrid(
-																										"reload");
+					$
+							.get(
+									"/check/bookdelete",
+									function(data) {
+										if (data.status == 201) {
+											$.messager
+													.alert("提示", "没有权限或系统维护!");
+										} else {
+											var ids = getSelectionsreviewIds();
+											if (ids.length == 0) {
+												$.messager.alert('提示',
+														'未选中评论信息!');
+												return;
+											}
+											$.messager
+													.confirm(
+															'确认',
+															'确定删除ID为 '
+																	+ ids
+																	+ ' 的评论信息吗？',
+															function(r) {
+																if (r) {
+																	var params = {
+																		"ids" : ids
+																	};
+																	$
+																			.post(
+																					"/book/review/delete",
+																					params,
+																					function(
+																							data) {
+																						if (data.status == 200) {
+																							$.messager
+																									.alert(
+																											'提示',
+																											'删除评论信息成功!',
+																											undefined,
+																											function() {
+																												$(
+																														"#reviewList")
+																														.datagrid(
+																																"reload");
+																											});
+																						} else {
+																							$.messager
+																									.alert(
+																											"提示",
+																											data.msg);
+																						}
 																					});
-																} else {
-																	$.messager
-																			.alert(
-																					"提示",
-																					data.msg);
 																}
 															});
 										}
 									});
+
 				}
 			}, {
 				text : '重置/刷新',
@@ -109,7 +131,7 @@
 					//$.parser.parse();
 					$('#bookName').textbox('reset');
 					$('#UserName').textbox('reset');
-					
+
 					$('#reviewList').datagrid('load', {
 						bookName : $("#bookName").textbox("getValue"),
 						UserName : $("#UserName").textbox("getValue")
